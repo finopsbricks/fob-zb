@@ -63,17 +63,28 @@ API host from the token response's `api_domain`.
 
 ## CLI surface (so far)
 
-`config` (profiles: add/list/use/remove/current/refresh), `auth` (status/refresh/logout),
-`organizations` (list/show). The full resource map (contacts, invoices, bills, expenses, items,
-payments, chart-of-accounts, banking, journals, …) is sequenced in
-`docs/wip/fob-zb-implementation.md`.
+Meta: `config` (profiles: add/list/use/remove/current/refresh), `auth` (status/refresh/logout).
+
+Read resources (`list` + `show`, with `--json`, `--fields`, `--format table|csv|json`, `--output`,
+`--page`/`--per-page`): `organizations`, `contacts`, `invoices`, `bills`, `expenses`, `items`,
+`customer-payments`, `chart-of-accounts`, `bank-accounts`, `bank-transactions`.
+
+```bash
+fob-zb invoices list --status overdue
+fob-zb invoices show <id>                 # with line items
+fob-zb contacts list --type customer      # (--type / --status are mutually exclusive; Zoho limit)
+fob-zb bank-accounts list --format csv --fields account_name,account_type,balance
+fob-zb bank-transactions list --account-id <id> --status uncategorized
+```
 
 Run `fob-zb <resource>` to see a resource's actions, or `fob-zb <resource> <action> --help`.
+The full resource map is sequenced in `docs/wip/fob-zb-implementation.md`.
 
 ## Status
 
-Phase 1 complete: OAuth2 transport, config/auth, and `organizations`. Resource build-out
-(read → write → banking → full parity) is tracked in `docs/wip/fob-zb-implementation.md`.
+Phases 0–2 complete: OAuth2 transport, config/auth, and the read surface for the 9 core resources
+(validated live). Write surface + custom actions and the remaining resources are tracked in
+`docs/wip/fob-zb-implementation.md`.
 
 ## Develop
 

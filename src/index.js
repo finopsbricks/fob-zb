@@ -24,9 +24,25 @@
 import { createTransport } from './http.js';
 import { buildOrganizations } from './resources/organizations.js';
 import { buildContacts } from './resources/contacts.js';
+import { buildInvoices } from './resources/invoices.js';
+import { buildBills } from './resources/bills.js';
+import { buildExpenses } from './resources/expenses.js';
+import { buildItems } from './resources/items.js';
+import { buildCustomerPayments } from './resources/customer-payments.js';
+import { buildChartOfAccounts } from './resources/chart-of-accounts.js';
+import { buildBankAccounts } from './resources/bank-accounts.js';
+import { buildBankTransactions } from './resources/bank-transactions.js';
 
 /**
  * @typedef {import('./resources/contacts.js').ContactsApi} ContactsApi
+ * @typedef {import('./resources/invoices.js').InvoicesApi} InvoicesApi
+ * @typedef {import('./resources/bills.js').BillsApi} BillsApi
+ * @typedef {import('./resources/expenses.js').ExpensesApi} ExpensesApi
+ * @typedef {import('./resources/items.js').ItemsApi} ItemsApi
+ * @typedef {import('./resources/customer-payments.js').CustomerPaymentsApi} CustomerPaymentsApi
+ * @typedef {import('./resources/chart-of-accounts.js').ChartOfAccountsApi} ChartOfAccountsApi
+ * @typedef {import('./resources/bank-accounts.js').BankAccountsApi} BankAccountsApi
+ * @typedef {import('./resources/bank-transactions.js').BankTransactionsApi} BankTransactionsApi
  */
 
 /**
@@ -35,6 +51,14 @@ import { buildContacts } from './resources/contacts.js';
  * @typedef {Object} ZbClient
  * @property {OrganizationsApi} organizations
  * @property {ContactsApi} contacts
+ * @property {InvoicesApi} invoices
+ * @property {BillsApi} bills
+ * @property {ExpensesApi} expenses
+ * @property {ItemsApi} items
+ * @property {CustomerPaymentsApi} customerPayments
+ * @property {ChartOfAccountsApi} chartOfAccounts
+ * @property {BankAccountsApi} bankAccounts
+ * @property {BankTransactionsApi} bankTransactions
  * @property {() => Promise<any>} whoami
  */
 
@@ -50,6 +74,14 @@ export function fobZb(credentials) {
   return {
     organizations: buildOrganizations(ctx),
     contacts: buildContacts(ctx),
+    invoices: buildInvoices(ctx),
+    bills: buildBills(ctx),
+    expenses: buildExpenses(ctx),
+    items: buildItems(ctx),
+    customerPayments: buildCustomerPayments(ctx),
+    chartOfAccounts: buildChartOfAccounts(ctx),
+    bankAccounts: buildBankAccounts(ctx),
+    bankTransactions: buildBankTransactions(ctx),
     /** The authenticated user (GET /users/me). */
     whoami: () => ctx.get('/users/me').then((r) => r?.user ?? null),
   };

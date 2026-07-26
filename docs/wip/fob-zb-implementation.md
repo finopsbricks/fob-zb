@@ -1,11 +1,13 @@
 # fob-zb — Zoho Books CLI + Client (2-in-1)
 
-## Status: IN PROGRESS (~30%)
+## Status: IN PROGRESS (~50%)
 
-Phases 0 (scaffold) and 1 (OAuth2 transport + config + auth + organizations) are complete and
-green: `npm test` 20/20, `npm run typecheck` clean. The client core, OAuth token lifecycle, config
-profiles, and the `organizations` bootstrap resource all work end-to-end. Remaining: the resource
-build-out (Phases 2–5).
+Phases 0–2 complete and green: `npm test` 31/31, `npm run typecheck` clean. The OAuth2 client core
++ token lifecycle, config profiles, and the full **read surface** for the 9 core resources
+(organizations, contacts, invoices, bills, expenses, items, customer-payments, chart-of-accounts,
+bank-accounts, bank-transactions) all work end-to-end — **validated live against a real Zoho org**.
+Remaining: the write surface + custom actions (Phase 3), the rest of the resources (Phase 4), and
+convenience/polish incl. browser-loopback auth (Phase 5).
 
 `@fob/zb` is the Zoho Books client library **and** the `fob-zb` CLI in one package, built to
 `engineering-standards/cli/`. It wraps the Zoho Books REST API v3 behind the family-standard
@@ -370,11 +372,24 @@ even though the API field is `customer_id`).
 identical yargs setup also exits 1. The standard's "exit 2" is unrealized by the references, so
 `fob-zb` stays consistent with the family rather than diverging.
 
-### Phase 2: Read surface — core resources ❌
+### Phase 2: Read surface — core resources ✅
 `list` (+ column selector, pagination, `--json/--format/--output`) and `show` for:
-- [ ] `contacts` · `invoices` · `bills` · `expenses` · `items`
-- [ ] `customer-payments` · `chart-of-accounts` · `bank-accounts` · `bank-transactions`
-- [ ] `resources/*.js` `buildX(ctx)` for each; `types/api/*.types.js`; per-handler tests
+- [x] `contacts` · `invoices` · `bills` · `expenses` · `items`
+- [x] `customer-payments` · `chart-of-accounts` · `bank-accounts` · `bank-transactions`
+- [x] `resources/*.js` `buildX(ctx)` (via shared `_base.js`); `types/api/*.types.js`; shared `cli/utils/list-runner.js`
+- [x] Tests (runList unit + filter-mapping handler tests) and a live smoke test of all 9 resources
+
+**Phase 2 notes:**
+- Added `resources/_base.js` (uniform list/getAll/get) and `cli/utils/list-runner.js` (shared
+  table/csv/json/output/pagination) to keep 9 resources DRY and consistent.
+- **Zoho contacts filter quirk** (found live): `filter_by` is a single dimension —
+  `Status.Customers`/`Status.Vendors` (type) vs `Status.Active`/`Status.Inactive` (status) — so
+  `--type` and `--status` are mutually exclusive; passing both is rejected rather than silently
+  returning wrong rows.
+- Per-resource `filter_by` casing varies (e.g. invoices `Status.OverDue`, bills `Status.Overdue`);
+  each list handler carries an explicit status→filter map.
+- Handler tests cover the distinct per-resource filter logic + the shared runList; the thin
+  identical resources (expenses/items/bank-accounts/customer-payments) lean on the runList test.
 
 ### Phase 3: Write surface + custom actions (core) ❌
 - [ ] `create`/`edit`/`delete` for the Phase 2 resources

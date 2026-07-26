@@ -15,6 +15,14 @@ import { buildConfigSubcommands } from './config/index.js';
 import { buildAuthSubcommands } from './auth/index.js';
 import { buildOrganizationsSubcommands } from './organizations/index.js';
 import { buildContactsSubcommands } from './contacts/index.js';
+import { buildInvoicesSubcommands } from './invoices/index.js';
+import { buildBillsSubcommands } from './bills/index.js';
+import { buildExpensesSubcommands } from './expenses/index.js';
+import { buildItemsSubcommands } from './items/index.js';
+import { buildCustomerPaymentsSubcommands } from './customer-payments/index.js';
+import { buildChartOfAccountsSubcommands } from './chart-of-accounts/index.js';
+import { buildBankAccountsSubcommands } from './bank-accounts/index.js';
+import { buildBankTransactionsSubcommands } from './bank-transactions/index.js';
 
 export function run(argv) {
   return yargs(argv)
@@ -32,6 +40,14 @@ export function run(argv) {
     .command('auth <action>', 'OAuth token operations (status, refresh, logout)', buildAuthSubcommands)
     .command('organizations <action>', 'List/show Zoho organizations (tenants)', buildOrganizationsSubcommands)
     .command('contacts <action>', 'List/show contacts (customers & vendors)', buildContactsSubcommands)
+    .command('invoices <action>', 'List/show invoices', buildInvoicesSubcommands)
+    .command('bills <action>', 'List/show vendor bills', buildBillsSubcommands)
+    .command('expenses <action>', 'List/show expenses', buildExpensesSubcommands)
+    .command('items <action>', 'List/show items (products & services)', buildItemsSubcommands)
+    .command('customer-payments <action>', 'List/show customer payments', buildCustomerPaymentsSubcommands)
+    .command('chart-of-accounts <action>', 'List/show ledger accounts', buildChartOfAccountsSubcommands)
+    .command('bank-accounts <action>', 'List/show bank & credit-card accounts', buildBankAccountsSubcommands)
+    .command('bank-transactions <action>', 'List/show bank feed transactions', buildBankTransactionsSubcommands)
     .demandCommand(1, 'Specify a resource. Try `fob-zb --help`.')
     .strict()
     .help()
