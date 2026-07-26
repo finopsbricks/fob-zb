@@ -1,9 +1,11 @@
 # fob-zb — Zoho Books CLI + Client (2-in-1)
 
-## Status: IN PROGRESS (~55%)
+## Status: IN PROGRESS (~75%)
 
-Phases 0–2 complete; Phase 3 (write surface) started with contacts as the pattern-setter, validated
-live on a throwaway test org. Green: `npm test` 35/35, `npm run typecheck` clean. The OAuth2 client core
+Phases 0–2 complete; Phase 3 (write surface) complete for the core resources, validated live on a
+throwaway test org (profile `test` → 932844403). Green: `npm test` 61/61, `npm run typecheck` clean.
+Remaining: Phase 4 (remaining resources) and Phase 5 (polish, browser-loopback auth, attachments,
+bulk ops). The OAuth2 client core
 + token lifecycle, config profiles, and the full **read surface** for the 9 core resources
 (organizations, contacts, invoices, bills, expenses, items, customer-payments, chart-of-accounts,
 bank-accounts, bank-transactions) all work end-to-end — **validated live against a real Zoho org**.
@@ -392,19 +394,31 @@ identical yargs setup also exits 1. The standard's "exit 2" is unrealized by the
 - Handler tests cover the distinct per-resource filter logic + the shared runList; the thin
   identical resources (expenses/items/bank-accounts/customer-payments) lean on the runList test.
 
-### Phase 3: Write surface + custom actions (core) 🔄
-- [x] `resources/_base.js` `writeResource` (create/update/delete); **contacts** `create`/`edit`/`delete`/`activate`/`deactivate` + `--yes` delete guard
-- [x] Write pattern **validated live on the test org 932844403** (create→show→edit→deactivate→activate→delete→verify-gone); write-handler tests
-- [ ] `create`/`edit`/`delete` for the remaining Phase 2 resources (items, chart-of-accounts, bank-accounts first — simple field bodies)
-- [ ] Invoices: `create`, `mark-sent/void`, `submit/approve`, `email`, `apply-credits`, `writeoff`, `payments`
-- [ ] Bills: `create`, `mark-open/void`, `submit/approve`, `apply-credits`; `vendor-payments create` (record bill payment)
-- [ ] Bank transactions: `categorize`/`match`/`unmatch`/`exclude`; bank-accounts `import-statement`
-- [ ] Contacts: `email`, `statement`
+### Phase 3: Write surface + custom actions (core) ✅
+- [x] `resources/_base.js` `writeResource` (create/update/delete) + `cli/utils/write-commands.js` `makeWriteHandlers` factory
+- [x] **contacts** create/edit/delete/activate/deactivate (bespoke reference) + `--yes` delete guard
+- [x] **items / chart-of-accounts / bank-accounts** create/edit/delete/activate/deactivate (via factory)
+- [x] **invoices** create (line items via `--item/--rate` or repeatable `--line`), edit, delete, mark-sent, mark-void, email, writeoff, cancel-writeoff
+- [x] **bills** create (account_id line items), edit, delete, mark-open, mark-void
+- [x] **vendor-payments** (NEW resource) list/show/create/delete — records bill payments (`--bill`/`--apply`, `--paid-through`)
+- [x] **bank-transactions** categorize/match/unmatch/uncategorize/exclude/restore + manual create/delete
+- [ ] Deferred: contacts `email`/`statement`; invoices `apply-credits`, `submit`/`approve`; bank-accounts `import-statement`
 
-**Phase 3 notes:** write testing runs against a **dedicated throwaway Zoho org** (profile `test` →
-org 932844403), never the real books — the shared refresh token reaches it since it's under the
-same login. Contacts email/phone map onto a primary `contact_persons[]` entry (Zoho has no
-contact-level email/phone on create).
+**Phase 3 notes:**
+- Write testing runs against a **dedicated throwaway org** (profile `test` → 932844403), never the
+  real books — the shared refresh token reaches it (same login). Every write lifecycle below was
+  run end-to-end **then cleaned up**: contacts, items, chart-of-accounts, bank-accounts (full
+  CRUD+status), invoices (create→sent→writeoff→cancel→void→delete), bills+vendor-payments
+  (create bill→record payment→bill goes to paid/0.00→delete).
+- Live-learned Zoho quirks: **bills require `bill_number`** (no auto-numbering like invoices);
+  contacts email/phone map onto a primary `contact_persons[]`; vendor payments need a real
+  cash/bank paying account.
+- **bank-transactions categorize/match**: endpoints + arg/body mapping are implemented and
+  unit-tested, but categorize/match operate on *uncategorized bank-feed* items — a fresh test org
+  has none, so they are **not live-validated**. `--field key=value` keeps values as strings on
+  purpose (19-digit Zoho ids overflow `Number`). Manual `create` failed live with "Account does
+  not exist" (needs an established account/offset), so it's shipped but not live-validated.
+- Invoice `email` implemented but not fired live (avoids sending real mail).
 
 ### Phase 4: Remaining resources (full parity) ❌
 - [ ] `estimates` · `sales-orders` · `credit-notes` · `retainer-invoices` · `recurring-invoices`
