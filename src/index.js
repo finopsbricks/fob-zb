@@ -23,12 +23,18 @@
 
 import { createTransport } from './http.js';
 import { buildOrganizations } from './resources/organizations.js';
+import { buildContacts } from './resources/contacts.js';
+
+/**
+ * @typedef {import('./resources/contacts.js').ContactsApi} ContactsApi
+ */
 
 /**
  * The Zoho Books client surface. Explicit (not inferred) so callers get a
  * checked, autocompleted surface.
  * @typedef {Object} ZbClient
  * @property {OrganizationsApi} organizations
+ * @property {ContactsApi} contacts
  * @property {() => Promise<any>} whoami
  */
 
@@ -43,6 +49,7 @@ export function fobZb(credentials) {
   const ctx = createTransport(credentials);
   return {
     organizations: buildOrganizations(ctx),
+    contacts: buildContacts(ctx),
     /** The authenticated user (GET /users/me). */
     whoami: () => ctx.get('/users/me').then((r) => r?.user ?? null),
   };

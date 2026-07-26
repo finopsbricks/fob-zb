@@ -29,6 +29,18 @@ export function paginationOptions(yargs) {
     .option('json', { describe: 'Output raw JSON', type: 'boolean' });
 }
 
+/** Column-selection + format/output options shared by every `list` command. */
+export function listOutputOptions(yargs) {
+  return yargs
+    .option('fields', { describe: 'Columns to show, comma-separated', type: 'string' })
+    .option('format', {
+      describe: 'Output format. csv/json auto-paginate the full result set',
+      type: 'string',
+      choices: ['table', 'csv', 'json'],
+    })
+    .option('output', { describe: 'Write output to a file instead of stdout', type: 'string' });
+}
+
 // Print the credential-source hint at most once per invocation.
 let hintPrinted = false;
 

@@ -14,6 +14,7 @@ import { setProfileOverride } from './config-store.js';
 import { buildConfigSubcommands } from './config/index.js';
 import { buildAuthSubcommands } from './auth/index.js';
 import { buildOrganizationsSubcommands } from './organizations/index.js';
+import { buildContactsSubcommands } from './contacts/index.js';
 
 export function run(argv) {
   return yargs(argv)
@@ -30,6 +31,7 @@ export function run(argv) {
     .command('config <resource>', 'Manage credential profiles (alias: orgs)', buildConfigSubcommands)
     .command('auth <action>', 'OAuth token operations (status, refresh, logout)', buildAuthSubcommands)
     .command('organizations <action>', 'List/show Zoho organizations (tenants)', buildOrganizationsSubcommands)
+    .command('contacts <action>', 'List/show contacts (customers & vendors)', buildContactsSubcommands)
     .demandCommand(1, 'Specify a resource. Try `fob-zb --help`.')
     .strict()
     .help()
