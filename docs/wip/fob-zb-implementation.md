@@ -1,11 +1,13 @@
 # fob-zb — Zoho Books CLI + Client (2-in-1)
 
-## Status: IN PROGRESS (~75%)
+## Status: IN PROGRESS (~90%)
 
-Phases 0–2 complete; Phase 3 (write surface) complete for the core resources, validated live on a
-throwaway test org (profile `test` → 932844403). Green: `npm test` 61/61, `npm run typecheck` clean.
-Remaining: Phase 4 (remaining resources) and Phase 5 (polish, browser-loopback auth, attachments,
-bulk ops). The OAuth2 client core
+Phases 0–4 complete: OAuth2 transport, config/auth, read surface for **26 resources**, and the write
+surface for the core + document resources. Green: `npm test` 112/112, `npm run typecheck` clean.
+All 26 read resources **live-verified** against a real org (incl. the underscore keys
+recurring_*/vendor_credits/time_entries/contact_persons); core + document writes validated live on
+a throwaway test org. Remaining: Phase 5 polish (browser-loopback `auth login`, attachments, bulk
+ops), plus a few deferred items noted below. The OAuth2 client core
 + token lifecycle, config profiles, and the full **read surface** for the 9 core resources
 (organizations, contacts, invoices, bills, expenses, items, customer-payments, chart-of-accounts,
 bank-accounts, bank-transactions) all work end-to-end — **validated live against a real Zoho org**.
@@ -420,12 +422,12 @@ identical yargs setup also exits 1. The standard's "exit 2" is unrealized by the
   not exist" (needs an established account/offset), so it's shipped but not live-validated.
 - Invoice `email` implemented but not fired live (avoids sending real mail).
 
-### Phase 4: Remaining resources (full parity) ❌
-- [ ] `estimates` · `sales-orders` · `credit-notes` · `retainer-invoices` · `recurring-invoices`
-- [ ] `recurring-expenses` · `recurring-bills` · `vendor-payments` · `vendor-credits` · `purchase-orders`
-- [ ] `journals` · `base-currency-adjustments` · `bank-rules`
-- [ ] `projects` · `time-entries` · `users` · `taxes`/`tax-groups` · `currencies`
-- [ ] `contact-persons`
+### Phase 4: Remaining resources (full parity) ✅ (mostly)
+- [x] Read (list/show) for: `estimates` · `sales-orders` · `credit-notes` · `retainer-invoices` · `vendor-credits` · `purchase-orders` · `recurring-invoices` · `recurring-bills` · `recurring-expenses` · `journals` · `projects` · `time-entries` · `users` · `taxes` · `currencies` · `contact-persons` — **all list keys live-verified**
+- [x] Writes: `estimates`/`sales-orders`/`credit-notes`/`purchase-orders` create/edit/delete + mark-*/submit/approve/email (shared `document-write.js`; estimates lifecycle live-validated)
+- [x] `recurring-invoices`/`recurring-bills`/`recurring-expenses` stop/resume
+- [ ] Deferred writes: `journals` create (debit/credit lines), `projects`/`time-entries` create + timer, `vendor-credits` apply-to-bills, `users`/`taxes`/`currencies`/`contact-persons` create
+- [ ] Not built: `base-currency-adjustments`, `bank-rules` (low value; shapes least certain — build with a live probe when needed)
 
 ### Phase 5: Convenience & polish ❌
 - [ ] `auth login` browser loopback flow
