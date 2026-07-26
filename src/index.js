@@ -32,6 +32,7 @@ import { buildCustomerPayments } from './resources/customer-payments.js';
 import { buildChartOfAccounts } from './resources/chart-of-accounts.js';
 import { buildBankAccounts } from './resources/bank-accounts.js';
 import { buildBankTransactions } from './resources/bank-transactions.js';
+import { buildVendorPayments } from './resources/vendor-payments.js';
 
 /**
  * @typedef {import('./resources/contacts.js').ContactsApi} ContactsApi
@@ -43,6 +44,7 @@ import { buildBankTransactions } from './resources/bank-transactions.js';
  * @typedef {import('./resources/chart-of-accounts.js').ChartOfAccountsApi} ChartOfAccountsApi
  * @typedef {import('./resources/bank-accounts.js').BankAccountsApi} BankAccountsApi
  * @typedef {import('./resources/bank-transactions.js').BankTransactionsApi} BankTransactionsApi
+ * @typedef {import('./resources/vendor-payments.js').VendorPaymentsApi} VendorPaymentsApi
  */
 
 /**
@@ -59,6 +61,7 @@ import { buildBankTransactions } from './resources/bank-transactions.js';
  * @property {ChartOfAccountsApi} chartOfAccounts
  * @property {BankAccountsApi} bankAccounts
  * @property {BankTransactionsApi} bankTransactions
+ * @property {VendorPaymentsApi} vendorPayments
  * @property {() => Promise<any>} whoami
  */
 
@@ -82,6 +85,7 @@ export function fobZb(credentials) {
     chartOfAccounts: buildChartOfAccounts(ctx),
     bankAccounts: buildBankAccounts(ctx),
     bankTransactions: buildBankTransactions(ctx),
+    vendorPayments: buildVendorPayments(ctx),
     /** The authenticated user (GET /users/me). */
     whoami: () => ctx.get('/users/me').then((r) => r?.user ?? null),
   };

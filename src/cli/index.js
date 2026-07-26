@@ -23,6 +23,7 @@ import { buildCustomerPaymentsSubcommands } from './customer-payments/index.js';
 import { buildChartOfAccountsSubcommands } from './chart-of-accounts/index.js';
 import { buildBankAccountsSubcommands } from './bank-accounts/index.js';
 import { buildBankTransactionsSubcommands } from './bank-transactions/index.js';
+import { buildVendorPaymentsSubcommands } from './vendor-payments/index.js';
 
 export function run(argv) {
   return yargs(argv)
@@ -48,6 +49,7 @@ export function run(argv) {
     .command('chart-of-accounts <action>', 'List/show ledger accounts', buildChartOfAccountsSubcommands)
     .command('bank-accounts <action>', 'List/show bank & credit-card accounts', buildBankAccountsSubcommands)
     .command('bank-transactions <action>', 'List/show bank feed transactions', buildBankTransactionsSubcommands)
+    .command('vendor-payments <action>', 'List/show/record vendor payments', buildVendorPaymentsSubcommands)
     .demandCommand(1, 'Specify a resource. Try `fob-zb --help`.')
     .strict()
     .help()
