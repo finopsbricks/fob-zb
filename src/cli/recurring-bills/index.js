@@ -1,9 +1,10 @@
 import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
 import { listRecurringBillsHandler } from './list.js';
 import { showRecurringBillHandler } from './show.js';
+import { addRecurringCommands } from '../utils/document-write.js';
 
 export function buildRecurringBillsSubcommands(yargs) {
-  return yargs
+  yargs
     .usage('$0 recurring-bills <action> [options]')
     .command(
       'list',
@@ -23,6 +24,9 @@ export function buildRecurringBillsSubcommands(yargs) {
           .positional('id', { describe: 'Recurring bill id', type: 'string' })
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showRecurringBillHandler),
-    )
-    .demandCommand(1, 'Specify an action: list, show');
+    );
+
+  addRecurringCommands(yargs, { namespace: 'recurringBills', label: 'recurring bill' });
+
+  return yargs.demandCommand(1, 'Specify an action: list, show, stop, resume');
 }

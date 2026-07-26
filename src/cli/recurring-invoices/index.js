@@ -1,9 +1,10 @@
 import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
 import { listRecurringInvoicesHandler } from './list.js';
 import { showRecurringInvoiceHandler } from './show.js';
+import { addRecurringCommands } from '../utils/document-write.js';
 
 export function buildRecurringInvoicesSubcommands(yargs) {
-  return yargs
+  yargs
     .usage('$0 recurring-invoices <action> [options]')
     .command(
       'list',
@@ -23,6 +24,9 @@ export function buildRecurringInvoicesSubcommands(yargs) {
           .positional('id', { describe: 'Recurring invoice id', type: 'string' })
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showRecurringInvoiceHandler),
-    )
-    .demandCommand(1, 'Specify an action: list, show');
+    );
+
+  addRecurringCommands(yargs, { namespace: 'recurringInvoices', label: 'recurring invoice' });
+
+  return yargs.demandCommand(1, 'Specify an action: list, show, stop, resume');
 }

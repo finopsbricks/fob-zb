@@ -1,9 +1,10 @@
 import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
 import { listSalesOrdersHandler } from './list.js';
 import { showSalesOrderHandler } from './show.js';
+import { addDocumentWriteCommands } from '../utils/document-write.js';
 
 export function buildSalesOrdersSubcommands(yargs) {
-  return yargs
+  yargs
     .usage('$0 sales-orders <action> [options]')
     .command(
       'list',
@@ -23,6 +24,16 @@ export function buildSalesOrdersSubcommands(yargs) {
           .positional('id', { describe: 'Sales order id', type: 'string' })
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showSalesOrderHandler),
-    )
-    .demandCommand(1, 'Specify an action: list, show');
+    );
+
+  addDocumentWriteCommands(yargs, {
+    namespace: 'salesOrders', label: 'sales order', idField: 'salesorder_id', numberField: 'salesorder_number',
+    partyField: 'customer_id', partyArgKey: 'customer',
+    statuses: [
+      { verb: 'mark-open', state: 'open', desc: 'Mark as open', msg: (id) => `Marked sales order ${id} as open.` },
+      { verb: 'mark-void', state: 'void', desc: 'Void the sales order', msg: (id) => `Voided sales order ${id}.` },
+    ],
+  });
+
+  return yargs.demandCommand(1, 'Specify an action: list, show, create, edit, delete, mark-open, mark-void, submit, approve, email');
 }

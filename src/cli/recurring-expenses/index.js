@@ -1,9 +1,10 @@
 import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
 import { listRecurringExpensesHandler } from './list.js';
 import { showRecurringExpenseHandler } from './show.js';
+import { addRecurringCommands } from '../utils/document-write.js';
 
 export function buildRecurringExpensesSubcommands(yargs) {
-  return yargs
+  yargs
     .usage('$0 recurring-expenses <action> [options]')
     .command(
       'list',
@@ -22,6 +23,9 @@ export function buildRecurringExpensesSubcommands(yargs) {
           .positional('id', { describe: 'Recurring expense id', type: 'string' })
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showRecurringExpenseHandler),
-    )
-    .demandCommand(1, 'Specify an action: list, show');
+    );
+
+  addRecurringCommands(yargs, { namespace: 'recurringExpenses', label: 'recurring expense' });
+
+  return yargs.demandCommand(1, 'Specify an action: list, show, stop, resume');
 }

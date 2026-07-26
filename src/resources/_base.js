@@ -30,6 +30,38 @@ export function baseResource(ctx, { path, listKey, itemKey }) {
 }
 
 /**
+ * Shared status/workflow actions for sales & purchase documents (estimates,
+ * sales orders, credit notes, purchase orders): status transitions, submit for
+ * approval, approve, and email. All are POSTs under the resource path.
+ *
+ * @param {Transport} ctx
+ * @param {string} path
+ */
+export function documentActions(ctx, path) {
+  const enc = encodeURIComponent;
+  return {
+    /** Transition status (state e.g. 'sent', 'void', 'open', 'billed'). */
+    status: (id, state) => ctx.post(`${path}/${enc(id)}/status/${state}`),
+    submit: (id) => ctx.post(`${path}/${enc(id)}/submit`),
+    approve: (id) => ctx.post(`${path}/${enc(id)}/approve`),
+    email: (id, body) => ctx.post(`${path}/${enc(id)}/email`, body ?? {}),
+  };
+}
+
+/**
+ * Stop/resume actions for recurring profiles (recurring invoices/bills/expenses).
+ * @param {Transport} ctx
+ * @param {string} path
+ */
+export function recurringActions(ctx, path) {
+  const enc = encodeURIComponent;
+  return {
+    stop: (id) => ctx.post(`${path}/${enc(id)}/status/stop`),
+    resume: (id) => ctx.post(`${path}/${enc(id)}/status/resume`),
+  };
+}
+
+/**
  * Uniform write scaffolding — create (POST), update (PUT), delete (DELETE).
  * Zoho updates are PUT (full or partial body), not PATCH. `delete` returns the
  * raw envelope (callers rarely need its body).
