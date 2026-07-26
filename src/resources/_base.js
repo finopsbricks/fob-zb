@@ -28,3 +28,22 @@ export function baseResource(ctx, { path, listKey, itemKey }) {
     get: (id) => ctx.get(`${path}/${encodeURIComponent(id)}`).then((r) => r?.[itemKey] ?? null),
   };
 }
+
+/**
+ * Uniform write scaffolding — create (POST), update (PUT), delete (DELETE).
+ * Zoho updates are PUT (full or partial body), not PATCH. `delete` returns the
+ * raw envelope (callers rarely need its body).
+ *
+ * @param {Transport} ctx
+ * @param {{ path: string, itemKey: string }} spec
+ */
+export function writeResource(ctx, { path, itemKey }) {
+  return {
+    /** Create a record (`body` uses Zoho field names). Returns the created record. */
+    create: (body) => ctx.post(path, body).then((r) => r?.[itemKey] ?? null),
+    /** Update a record (PUT). Returns the updated record. */
+    update: (id, body) => ctx.put(`${path}/${encodeURIComponent(id)}`, body).then((r) => r?.[itemKey] ?? null),
+    /** Delete a record. */
+    delete: (id) => ctx.delete(`${path}/${encodeURIComponent(id)}`),
+  };
+}

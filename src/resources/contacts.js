@@ -8,14 +8,21 @@
  * @typedef {import('../types/api/Contact.types.js').Contact} Contact
  */
 
-import { baseResource } from './_base.js';
+import { baseResource, writeResource } from './_base.js';
 
 /**
  * @typedef {Object} ContactsApi
  * @property {(params?: object) => Promise<{ data: Contact[], page_context: object|null }>} list
  * @property {(params?: object) => Promise<Contact[]>} getAll
  * @property {(id: string) => Promise<Contact|null>} get
+ * @property {(body: object) => Promise<Contact|null>} create
+ * @property {(id: string, body: object) => Promise<Contact|null>} update
+ * @property {(id: string) => Promise<any>} delete
+ * @property {(id: string) => Promise<any>} markActive
+ * @property {(id: string) => Promise<any>} markInactive
  */
+
+const P = '/contacts';
 
 /**
  * @param {Transport} ctx
@@ -23,6 +30,11 @@ import { baseResource } from './_base.js';
  */
 export function buildContacts(ctx) {
   return {
-    ...baseResource(ctx, { path: '/contacts', listKey: 'contacts', itemKey: 'contact' }),
+    ...baseResource(ctx, { path: P, listKey: 'contacts', itemKey: 'contact' }),
+    ...writeResource(ctx, { path: P, itemKey: 'contact' }),
+    /** Mark a contact active. */
+    markActive: (id) => ctx.post(`${P}/${encodeURIComponent(id)}/active`),
+    /** Mark a contact inactive. */
+    markInactive: (id) => ctx.post(`${P}/${encodeURIComponent(id)}/inactive`),
   };
 }

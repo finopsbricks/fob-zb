@@ -1,10 +1,15 @@
 /**
- * Subtree builder for `fob-zb contacts <action>`. Read actions for now.
+ * Subtree builder for `fob-zb contacts <action>`.
  */
 
 import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
 import { listContactsHandler } from './list.js';
 import { showContactHandler } from './show.js';
+import { createContactHandler } from './create.js';
+import { editContactHandler } from './edit.js';
+import { deleteContactHandler } from './delete.js';
+import { activateContactHandler, deactivateContactHandler } from './status.js';
+import { contactFieldOptions } from './_body.js';
 
 export function buildContactsSubcommands(yargs) {
   return yargs
@@ -28,5 +33,41 @@ export function buildContactsSubcommands(yargs) {
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showContactHandler),
     )
-    .demandCommand(1, 'Specify an action: list, show');
+    .command(
+      'create',
+      'Create a contact',
+      (y) => contactFieldOptions(y).option('name', { describe: 'Contact name', type: 'string', demandOption: true }),
+      safe(createContactHandler),
+    )
+    .command(
+      'edit <id>',
+      'Update a contact (only passed flags change)',
+      (y) =>
+        contactFieldOptions(y)
+          .positional('id', { describe: 'Contact id', type: 'string' })
+          .option('name', { describe: 'Contact name', type: 'string' }),
+      safe(editContactHandler),
+    )
+    .command(
+      'delete <id>',
+      'Delete a contact (requires --yes)',
+      (y) =>
+        y
+          .positional('id', { describe: 'Contact id', type: 'string' })
+          .option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }),
+      safe(deleteContactHandler),
+    )
+    .command(
+      'activate <id>',
+      'Mark a contact active',
+      (y) => y.positional('id', { describe: 'Contact id', type: 'string' }),
+      safe(activateContactHandler),
+    )
+    .command(
+      'deactivate <id>',
+      'Mark a contact inactive',
+      (y) => y.positional('id', { describe: 'Contact id', type: 'string' }),
+      safe(deactivateContactHandler),
+    )
+    .demandCommand(1, 'Specify an action: list, show, create, edit, delete, activate, deactivate');
 }

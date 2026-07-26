@@ -1,8 +1,9 @@
 # fob-zb — Zoho Books CLI + Client (2-in-1)
 
-## Status: IN PROGRESS (~50%)
+## Status: IN PROGRESS (~55%)
 
-Phases 0–2 complete and green: `npm test` 31/31, `npm run typecheck` clean. The OAuth2 client core
+Phases 0–2 complete; Phase 3 (write surface) started with contacts as the pattern-setter, validated
+live on a throwaway test org. Green: `npm test` 35/35, `npm run typecheck` clean. The OAuth2 client core
 + token lifecycle, config profiles, and the full **read surface** for the 9 core resources
 (organizations, contacts, invoices, bills, expenses, items, customer-payments, chart-of-accounts,
 bank-accounts, bank-transactions) all work end-to-end — **validated live against a real Zoho org**.
@@ -391,12 +392,19 @@ identical yargs setup also exits 1. The standard's "exit 2" is unrealized by the
 - Handler tests cover the distinct per-resource filter logic + the shared runList; the thin
   identical resources (expenses/items/bank-accounts/customer-payments) lean on the runList test.
 
-### Phase 3: Write surface + custom actions (core) ❌
-- [ ] `create`/`edit`/`delete` for the Phase 2 resources
-- [ ] Invoices: `mark-sent/void`, `submit/approve`, `email`, `apply-credits`, `writeoff`, `payments`
-- [ ] Bills: `mark-open/void`, `submit/approve`, `apply-credits`; `vendor-payments create` (record bill payment)
+### Phase 3: Write surface + custom actions (core) 🔄
+- [x] `resources/_base.js` `writeResource` (create/update/delete); **contacts** `create`/`edit`/`delete`/`activate`/`deactivate` + `--yes` delete guard
+- [x] Write pattern **validated live on the test org 932844403** (create→show→edit→deactivate→activate→delete→verify-gone); write-handler tests
+- [ ] `create`/`edit`/`delete` for the remaining Phase 2 resources (items, chart-of-accounts, bank-accounts first — simple field bodies)
+- [ ] Invoices: `create`, `mark-sent/void`, `submit/approve`, `email`, `apply-credits`, `writeoff`, `payments`
+- [ ] Bills: `create`, `mark-open/void`, `submit/approve`, `apply-credits`; `vendor-payments create` (record bill payment)
 - [ ] Bank transactions: `categorize`/`match`/`unmatch`/`exclude`; bank-accounts `import-statement`
-- [ ] Contacts/items: `activate`/`deactivate`; contacts `email`,`statement`
+- [ ] Contacts: `email`, `statement`
+
+**Phase 3 notes:** write testing runs against a **dedicated throwaway Zoho org** (profile `test` →
+org 932844403), never the real books — the shared refresh token reaches it since it's under the
+same login. Contacts email/phone map onto a primary `contact_persons[]` entry (Zoho has no
+contact-level email/phone on create).
 
 ### Phase 4: Remaining resources (full parity) ❌
 - [ ] `estimates` · `sales-orders` · `credit-notes` · `retainer-invoices` · `recurring-invoices`
