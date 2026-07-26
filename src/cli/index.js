@@ -24,6 +24,22 @@ import { buildChartOfAccountsSubcommands } from './chart-of-accounts/index.js';
 import { buildBankAccountsSubcommands } from './bank-accounts/index.js';
 import { buildBankTransactionsSubcommands } from './bank-transactions/index.js';
 import { buildVendorPaymentsSubcommands } from './vendor-payments/index.js';
+import { buildEstimatesSubcommands } from './estimates/index.js';
+import { buildSalesOrdersSubcommands } from './sales-orders/index.js';
+import { buildCreditNotesSubcommands } from './credit-notes/index.js';
+import { buildRetainerInvoicesSubcommands } from './retainer-invoices/index.js';
+import { buildVendorCreditsSubcommands } from './vendor-credits/index.js';
+import { buildPurchaseOrdersSubcommands } from './purchase-orders/index.js';
+import { buildRecurringInvoicesSubcommands } from './recurring-invoices/index.js';
+import { buildRecurringBillsSubcommands } from './recurring-bills/index.js';
+import { buildRecurringExpensesSubcommands } from './recurring-expenses/index.js';
+import { buildJournalsSubcommands } from './journals/index.js';
+import { buildProjectsSubcommands } from './projects/index.js';
+import { buildTimeEntriesSubcommands } from './time-entries/index.js';
+import { buildUsersSubcommands } from './users/index.js';
+import { buildTaxesSubcommands } from './taxes/index.js';
+import { buildCurrenciesSubcommands } from './currencies/index.js';
+import { buildContactPersonsSubcommands } from './contact-persons/index.js';
 
 export function run(argv) {
   return yargs(argv)
@@ -50,6 +66,22 @@ export function run(argv) {
     .command('bank-accounts <action>', 'List/show bank & credit-card accounts', buildBankAccountsSubcommands)
     .command('bank-transactions <action>', 'List/show bank feed transactions', buildBankTransactionsSubcommands)
     .command('vendor-payments <action>', 'List/show/record vendor payments', buildVendorPaymentsSubcommands)
+    .command('estimates <action>', 'List/show estimates', buildEstimatesSubcommands)
+    .command('sales-orders <action>', 'List/show sales orders', buildSalesOrdersSubcommands)
+    .command('credit-notes <action>', 'List/show credit notes', buildCreditNotesSubcommands)
+    .command('retainer-invoices <action>', 'List/show retainer invoices', buildRetainerInvoicesSubcommands)
+    .command('vendor-credits <action>', 'List/show vendor credits', buildVendorCreditsSubcommands)
+    .command('purchase-orders <action>', 'List/show purchase orders', buildPurchaseOrdersSubcommands)
+    .command('recurring-invoices <action>', 'List/show recurring invoices', buildRecurringInvoicesSubcommands)
+    .command('recurring-bills <action>', 'List/show recurring bills', buildRecurringBillsSubcommands)
+    .command('recurring-expenses <action>', 'List/show recurring expenses', buildRecurringExpensesSubcommands)
+    .command('journals <action>', 'List/show manual journals', buildJournalsSubcommands)
+    .command('projects <action>', 'List/show projects', buildProjectsSubcommands)
+    .command('time-entries <action>', 'List/show project time entries', buildTimeEntriesSubcommands)
+    .command('users <action>', 'List/show users', buildUsersSubcommands)
+    .command('taxes <action>', 'List/show taxes', buildTaxesSubcommands)
+    .command('currencies <action>', 'List/show currencies', buildCurrenciesSubcommands)
+    .command('contact-persons <action>', 'List/show contact persons', buildContactPersonsSubcommands)
     .demandCommand(1, 'Specify a resource. Try `fob-zb --help`.')
     .strict()
     .help()

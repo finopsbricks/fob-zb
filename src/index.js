@@ -33,6 +33,22 @@ import { buildChartOfAccounts } from './resources/chart-of-accounts.js';
 import { buildBankAccounts } from './resources/bank-accounts.js';
 import { buildBankTransactions } from './resources/bank-transactions.js';
 import { buildVendorPayments } from './resources/vendor-payments.js';
+import { buildEstimates } from './resources/estimates.js';
+import { buildSalesOrders } from './resources/sales-orders.js';
+import { buildCreditNotes } from './resources/credit-notes.js';
+import { buildRetainerInvoices } from './resources/retainer-invoices.js';
+import { buildVendorCredits } from './resources/vendor-credits.js';
+import { buildPurchaseOrders } from './resources/purchase-orders.js';
+import { buildRecurringInvoices } from './resources/recurring-invoices.js';
+import { buildRecurringBills } from './resources/recurring-bills.js';
+import { buildRecurringExpenses } from './resources/recurring-expenses.js';
+import { buildJournals } from './resources/journals.js';
+import { buildProjects } from './resources/projects.js';
+import { buildTimeEntries } from './resources/time-entries.js';
+import { buildUsers } from './resources/users.js';
+import { buildTaxes } from './resources/taxes.js';
+import { buildCurrencies } from './resources/currencies.js';
+import { buildContactPersons } from './resources/contact-persons.js';
 
 /**
  * @typedef {import('./resources/contacts.js').ContactsApi} ContactsApi
@@ -45,6 +61,22 @@ import { buildVendorPayments } from './resources/vendor-payments.js';
  * @typedef {import('./resources/bank-accounts.js').BankAccountsApi} BankAccountsApi
  * @typedef {import('./resources/bank-transactions.js').BankTransactionsApi} BankTransactionsApi
  * @typedef {import('./resources/vendor-payments.js').VendorPaymentsApi} VendorPaymentsApi
+ * @typedef {import('./resources/estimates.js').EstimatesApi} EstimatesApi
+ * @typedef {import('./resources/sales-orders.js').SalesOrdersApi} SalesOrdersApi
+ * @typedef {import('./resources/credit-notes.js').CreditNotesApi} CreditNotesApi
+ * @typedef {import('./resources/retainer-invoices.js').RetainerInvoicesApi} RetainerInvoicesApi
+ * @typedef {import('./resources/vendor-credits.js').VendorCreditsApi} VendorCreditsApi
+ * @typedef {import('./resources/purchase-orders.js').PurchaseOrdersApi} PurchaseOrdersApi
+ * @typedef {import('./resources/recurring-invoices.js').RecurringInvoicesApi} RecurringInvoicesApi
+ * @typedef {import('./resources/recurring-bills.js').RecurringBillsApi} RecurringBillsApi
+ * @typedef {import('./resources/recurring-expenses.js').RecurringExpensesApi} RecurringExpensesApi
+ * @typedef {import('./resources/journals.js').JournalsApi} JournalsApi
+ * @typedef {import('./resources/projects.js').ProjectsApi} ProjectsApi
+ * @typedef {import('./resources/time-entries.js').TimeEntriesApi} TimeEntriesApi
+ * @typedef {import('./resources/users.js').UsersApi} UsersApi
+ * @typedef {import('./resources/taxes.js').TaxesApi} TaxesApi
+ * @typedef {import('./resources/currencies.js').CurrenciesApi} CurrenciesApi
+ * @typedef {import('./resources/contact-persons.js').ContactPersonsApi} ContactPersonsApi
  */
 
 /**
@@ -62,6 +94,22 @@ import { buildVendorPayments } from './resources/vendor-payments.js';
  * @property {BankAccountsApi} bankAccounts
  * @property {BankTransactionsApi} bankTransactions
  * @property {VendorPaymentsApi} vendorPayments
+ * @property {EstimatesApi} estimates
+ * @property {SalesOrdersApi} salesOrders
+ * @property {CreditNotesApi} creditNotes
+ * @property {RetainerInvoicesApi} retainerInvoices
+ * @property {VendorCreditsApi} vendorCredits
+ * @property {PurchaseOrdersApi} purchaseOrders
+ * @property {RecurringInvoicesApi} recurringInvoices
+ * @property {RecurringBillsApi} recurringBills
+ * @property {RecurringExpensesApi} recurringExpenses
+ * @property {JournalsApi} journals
+ * @property {ProjectsApi} projects
+ * @property {TimeEntriesApi} timeEntries
+ * @property {UsersApi} users
+ * @property {TaxesApi} taxes
+ * @property {CurrenciesApi} currencies
+ * @property {ContactPersonsApi} contactPersons
  * @property {() => Promise<any>} whoami
  */
 
@@ -86,6 +134,22 @@ export function fobZb(credentials) {
     bankAccounts: buildBankAccounts(ctx),
     bankTransactions: buildBankTransactions(ctx),
     vendorPayments: buildVendorPayments(ctx),
+    estimates: buildEstimates(ctx),
+    salesOrders: buildSalesOrders(ctx),
+    creditNotes: buildCreditNotes(ctx),
+    retainerInvoices: buildRetainerInvoices(ctx),
+    vendorCredits: buildVendorCredits(ctx),
+    purchaseOrders: buildPurchaseOrders(ctx),
+    recurringInvoices: buildRecurringInvoices(ctx),
+    recurringBills: buildRecurringBills(ctx),
+    recurringExpenses: buildRecurringExpenses(ctx),
+    journals: buildJournals(ctx),
+    projects: buildProjects(ctx),
+    timeEntries: buildTimeEntries(ctx),
+    users: buildUsers(ctx),
+    taxes: buildTaxes(ctx),
+    currencies: buildCurrencies(ctx),
+    contactPersons: buildContactPersons(ctx),
     /** The authenticated user (GET /users/me). */
     whoami: () => ctx.get('/users/me').then((r) => r?.user ?? null),
   };
