@@ -1,6 +1,11 @@
 # fob-zb — Zoho Books CLI + Client (2-in-1)
 
-## Status: NOT STARTED
+## Status: IN PROGRESS (~30%)
+
+Phases 0 (scaffold) and 1 (OAuth2 transport + config + auth + organizations) are complete and
+green: `npm test` 20/20, `npm run typecheck` clean. The client core, OAuth token lifecycle, config
+profiles, and the `organizations` bootstrap resource all work end-to-end. Remaining: the resource
+build-out (Phases 2–5).
 
 `@fob/zb` is the Zoho Books client library **and** the `fob-zb` CLI in one package, built to
 `engineering-standards/cli/`. It wraps the Zoho Books REST API v3 behind the family-standard
@@ -345,21 +350,25 @@ even though the API field is `customer_id`).
 
 ## Implementation Phases
 
-### Phase 0: Scaffold ❌
-- [ ] `package.json` (`@fob/zb`, ESM, bin, deps, `test`/`typecheck` scripts), `jsconfig.json`, `jest.config.cjs`, `.gitignore`, `.env.example`
-- [ ] `bin/cli.js` → `run(hideBin(process.argv))`
-- [ ] Copy `format.js`, `_helpers.js` (`safe()`, `clientFor()`), test `helpers.js` (`captureOutput`) from `fob-stm`
-- [ ] `src/cli/index.js` yargs root skeleton (`--profile` global, `.strict().demandCommand().help().version()`)
-- [ ] `src/types/general/` (Credentials, Transport)
+### Phase 0: Scaffold ✅
+- [x] `package.json` (`@fob/zb`, ESM, bin, deps, `test`/`typecheck` scripts), `jsconfig.json`, `jest.config.cjs`, `.gitignore`, `.env.example`
+- [x] `bin/cli.js` → `run(hideBin(process.argv))`
+- [x] `format.js`, `list.js` (column selector), `_helpers.js` (`safe()`, `clientFor()`), test `helpers.js` (`captureOutput`)
+- [x] `src/cli/index.js` yargs root (`--profile` global, `.strict().demandCommand().help().version()`)
+- [x] `src/types/general/` (Credentials, Transport)
 
-### Phase 1: OAuth transport + config + auth ❌
-- [ ] `src/oauth.js` — region map, grant-code exchange, refresh-token exchange, `api_domain` resolution
-- [ ] `src/http.js` — `createTransport(credentials)`: token refresh + cache, `Zoho-oauthtoken` header, `organization_id` injection, envelope unwrap, `ApiError`, 401-retry, 429 backoff, `apiGetAll`
-- [ ] `src/cli/config-store.js` — `~/.fob/fob-zb/config.yml` r/w (0600), `resolveCredentials()` (precedence), access-token cache persistence for CLI creds
-- [ ] `config profiles add|list|use|remove|current|refresh` (grant-code paste onboarding)
-- [ ] `auth status|refresh|logout`
-- [ ] `organizations list|show` (bootstrap `organization_id`) + `whoami`/`/users/me`
-- [ ] Tests: `oauth.test.js`, `http.test.js` (refresh triggers, expiry math, header, org_id, envelope, 401 retry), config-store precedence
+### Phase 1: OAuth transport + config + auth ✅
+- [x] `src/oauth.js` — region map, grant-code exchange, refresh-token exchange, revoke, `api_domain` resolution
+- [x] `src/http.js` — `createTransport(credentials)`: token refresh + cache, `Zoho-oauthtoken` header, `organization_id` injection, envelope unwrap (`code !== 0`), `ApiError`, 401-retry, 429 backoff, `getAll` (`has_more_page`)
+- [x] `src/cli/config-store.js` — `~/.fob/fob-zb/config.yml` r/w (0600), `resolveCredentials()` (flag > env > current), access-token persistence via `updateProfileTokens`
+- [x] `config profiles add|list|use|remove|current|refresh` (grant-code paste onboarding)
+- [x] `auth status|refresh|logout`
+- [x] `organizations list|show` (bootstrap `organization_id`) + `whoami`/`/users/me`
+- [x] Tests: `oauth.test.js`, `http.test.js` (refresh, cache reuse, header, org_id, envelope, 401 retry, pagination, persistToken), `config-store.test.js` (precedence), `organizations/list.test.js`. 20/20 green; typecheck clean.
+
+**Phase 1 note:** usage errors exit 1 (not 2) — matches the reference sibling `fob-stm`, whose
+identical yargs setup also exits 1. The standard's "exit 2" is unrealized by the references, so
+`fob-zb` stays consistent with the family rather than diverging.
 
 ### Phase 2: Read surface — core resources ❌
 `list` (+ column selector, pagination, `--json/--format/--output`) and `show` for:
