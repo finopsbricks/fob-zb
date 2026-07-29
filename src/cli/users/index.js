@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listUsersHandler } from './list.js';
 import { showUserHandler } from './show.js';
 
@@ -17,8 +17,7 @@ export function buildUsersSubcommands(yargs) {
       'show <id>',
       'Show a user by id',
       (y) =>
-        y
-          .positional('id', { describe: 'User id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'User id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showUserHandler),
     )

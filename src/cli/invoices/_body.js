@@ -8,6 +8,8 @@
  * Each line needs either an item_id (Zoho pulls name/rate) or a name/description + rate (ad-hoc).
  */
 
+import { localOptions } from '../_helpers.js';
+
 /** Parse one `k=v,k=v` --line string into a Zoho line-item object. */
 export function parseLine(str) {
   const line = {};
@@ -25,7 +27,7 @@ export function parseLine(str) {
 }
 
 export function invoiceFieldOptions(yargs) {
-  return yargs
+  return localOptions(yargs)
     .option('number', { describe: 'Invoice number (default: auto)', type: 'string' })
     .option('date', { describe: 'Invoice date (YYYY-MM-DD)', type: 'string' })
     .option('due-date', { describe: 'Due date (YYYY-MM-DD)', type: 'string' })

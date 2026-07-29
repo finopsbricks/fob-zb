@@ -1,10 +1,12 @@
 // @ts-check
 /** Shared bank-account write-field options + argv→Zoho-body mapping. */
 
+import { localOptions } from '../_helpers.js';
+
 export const BANK_ACCOUNT_TYPES = ['bank', 'credit_card'];
 
 export function bankAccountFieldOptions(yargs) {
-  return yargs
+  return localOptions(yargs)
     .option('code', { describe: 'Account code', type: 'string' })
     .option('account-number', { describe: 'Account number', type: 'string' })
     .option('description', { describe: 'Description', type: 'string' })

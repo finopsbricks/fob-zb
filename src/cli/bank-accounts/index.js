@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listBankAccountsHandler } from './list.js';
 import { showBankAccountHandler } from './show.js';
 import { bankAccountFieldOptions, buildBankAccountBody, BANK_ACCOUNT_TYPES } from './_body.js';
@@ -20,7 +20,7 @@ export function buildBankAccountsSubcommands(yargs) {
     .command(
       'show <id>',
       'Show a bank account by id',
-      (y) => y.positional('id', { describe: 'Bank account id', type: 'string' }).option('json', { describe: 'Output raw JSON', type: 'boolean' }),
+      (y) => localOptions(y.positional('id', { describe: 'Bank account id', type: 'string' })).option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showBankAccountHandler),
     )
     .command(
@@ -36,8 +36,7 @@ export function buildBankAccountsSubcommands(yargs) {
       'edit <id>',
       'Update a bank account (only passed flags change)',
       (y) =>
-        bankAccountFieldOptions(y)
-          .positional('id', { describe: 'Bank account id', type: 'string' })
+        bankAccountFieldOptions(y.positional('id', { describe: 'Bank account id', type: 'string' }))
           .option('name', { describe: 'Account name', type: 'string' })
           .option('type', { describe: 'Account type', type: 'string', choices: BANK_ACCOUNT_TYPES }),
       safe(w.edit),
@@ -45,7 +44,7 @@ export function buildBankAccountsSubcommands(yargs) {
     .command(
       'delete <id>',
       'Delete a bank account (requires --yes)',
-      (y) => y.positional('id', { describe: 'Bank account id', type: 'string' }).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }),
+      (y) => localOptions(y.positional('id', { describe: 'Bank account id', type: 'string' })).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }),
       safe(w.remove),
     )
     .command('activate <id>', 'Mark a bank account active', (y) => y.positional('id', { describe: 'Bank account id', type: 'string' }), safe(w.activate))

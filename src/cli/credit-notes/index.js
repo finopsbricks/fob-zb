@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listCreditNotesHandler } from './list.js';
 import { showCreditNoteHandler } from './show.js';
 import { addDocumentWriteCommands } from '../utils/document-write.js';
@@ -20,8 +20,7 @@ export function buildCreditNotesSubcommands(yargs) {
       'show <id>',
       'Show a credit note by id (with line items)',
       (y) =>
-        y
-          .positional('id', { describe: 'Credit note id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Credit note id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showCreditNoteHandler),
     );

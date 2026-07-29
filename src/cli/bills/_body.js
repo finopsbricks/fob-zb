@@ -4,6 +4,8 @@
  * `account_id` (expense/GL account) or an `item_id`.
  */
 
+import { localOptions } from '../_helpers.js';
+
 /** Parse one `k=v,k=v` --line string into a Zoho bill line-item object. */
 export function parseBillLine(str) {
   const line = {};
@@ -22,7 +24,7 @@ export function parseBillLine(str) {
 }
 
 export function billFieldOptions(yargs) {
-  return yargs
+  return localOptions(yargs)
     .option('number', { describe: 'Bill number (vendor invoice no.) — required unless auto-numbering is enabled', type: 'string' })
     .option('date', { describe: 'Bill date (YYYY-MM-DD)', type: 'string' })
     .option('due-date', { describe: 'Due date (YYYY-MM-DD)', type: 'string' })

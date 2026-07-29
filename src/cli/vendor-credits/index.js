@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listVendorCreditsHandler } from './list.js';
 import { showVendorCreditHandler } from './show.js';
 
@@ -19,8 +19,7 @@ export function buildVendorCreditsSubcommands(yargs) {
       'show <id>',
       'Show a vendor credit by id (with line items)',
       (y) =>
-        y
-          .positional('id', { describe: 'Vendor credit id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Vendor credit id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showVendorCreditHandler),
     )

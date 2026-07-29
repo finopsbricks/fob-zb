@@ -4,6 +4,7 @@ import { captureOutput } from '../../helpers.js';
 const contacts = { create: jest.fn(), update: jest.fn(), delete: jest.fn(), markInactive: jest.fn() };
 jest.unstable_mockModule('../../../src/cli/_helpers.js', () => ({
   clientFor: jest.fn(() => ({ contacts })),
+  localOptions: jest.fn((y) => y),
 }));
 
 const { createContactHandler } = await import('../../../src/cli/contacts/create.js');

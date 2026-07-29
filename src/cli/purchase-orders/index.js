@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listPurchaseOrdersHandler } from './list.js';
 import { showPurchaseOrderHandler } from './show.js';
 import { addDocumentWriteCommands } from '../utils/document-write.js';
@@ -20,8 +20,7 @@ export function buildPurchaseOrdersSubcommands(yargs) {
       'show <id>',
       'Show a purchase order by id (with line items)',
       (y) =>
-        y
-          .positional('id', { describe: 'Purchase order id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Purchase order id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showPurchaseOrderHandler),
     );

@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listItemsHandler } from './list.js';
 import { showItemHandler } from './show.js';
 import { itemFieldOptions, buildItemBody } from './_body.js';
@@ -21,7 +21,7 @@ export function buildItemsSubcommands(yargs) {
     .command(
       'show <id>',
       'Show an item by id',
-      (y) => y.positional('id', { describe: 'Item id', type: 'string' }).option('json', { describe: 'Output raw JSON', type: 'boolean' }),
+      (y) => localOptions(y.positional('id', { describe: 'Item id', type: 'string' })).option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showItemHandler),
     )
     .command(
@@ -36,13 +36,13 @@ export function buildItemsSubcommands(yargs) {
     .command(
       'edit <id>',
       'Update an item (only passed flags change)',
-      (y) => itemFieldOptions(y).positional('id', { describe: 'Item id', type: 'string' }).option('name', { describe: 'Item name', type: 'string' }),
+      (y) => itemFieldOptions(y.positional('id', { describe: 'Item id', type: 'string' })).option('name', { describe: 'Item name', type: 'string' }),
       safe(w.edit),
     )
     .command(
       'delete <id>',
       'Delete an item (requires --yes)',
-      (y) => y.positional('id', { describe: 'Item id', type: 'string' }).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }),
+      (y) => localOptions(y.positional('id', { describe: 'Item id', type: 'string' })).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }),
       safe(w.remove),
     )
     .command('activate <id>', 'Mark an item active', (y) => y.positional('id', { describe: 'Item id', type: 'string' }), safe(w.activate))

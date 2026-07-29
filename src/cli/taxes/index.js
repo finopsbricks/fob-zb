@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listTaxesHandler } from './list.js';
 import { showTaxHandler } from './show.js';
 
@@ -15,8 +15,7 @@ export function buildTaxesSubcommands(yargs) {
       'show <id>',
       'Show a tax by id',
       (y) =>
-        y
-          .positional('id', { describe: 'Tax id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Tax id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showTaxHandler),
     )

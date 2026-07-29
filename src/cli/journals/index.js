@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listJournalsHandler } from './list.js';
 import { showJournalHandler } from './show.js';
 
@@ -17,8 +17,7 @@ export function buildJournalsSubcommands(yargs) {
       'show <id>',
       'Show a journal by id (with line items)',
       (y) =>
-        y
-          .positional('id', { describe: 'Journal id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Journal id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showJournalHandler),
     )

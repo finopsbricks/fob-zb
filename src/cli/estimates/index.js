@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listEstimatesHandler } from './list.js';
 import { showEstimateHandler } from './show.js';
 import { addDocumentWriteCommands } from '../utils/document-write.js';
@@ -20,8 +20,7 @@ export function buildEstimatesSubcommands(yargs) {
       'show <id>',
       'Show an estimate by id (with line items)',
       (y) =>
-        y
-          .positional('id', { describe: 'Estimate id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Estimate id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showEstimateHandler),
     );

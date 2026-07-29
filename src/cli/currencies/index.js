@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listCurrenciesHandler } from './list.js';
 import { showCurrencyHandler } from './show.js';
 
@@ -15,8 +15,7 @@ export function buildCurrenciesSubcommands(yargs) {
       'show <id>',
       'Show a currency by id',
       (y) =>
-        y
-          .positional('id', { describe: 'Currency id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Currency id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showCurrencyHandler),
     )

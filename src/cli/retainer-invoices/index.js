@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listRetainerInvoicesHandler } from './list.js';
 import { showRetainerInvoiceHandler } from './show.js';
 
@@ -19,8 +19,7 @@ export function buildRetainerInvoicesSubcommands(yargs) {
       'show <id>',
       'Show a retainer invoice by id (with line items)',
       (y) =>
-        y
-          .positional('id', { describe: 'Retainer invoice id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Retainer invoice id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showRetainerInvoiceHandler),
     )

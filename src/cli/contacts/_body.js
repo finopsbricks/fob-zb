@@ -5,9 +5,11 @@
  * update. Validation messages use the CLI's flag names, not Zoho field names.
  */
 
+import { localOptions } from '../_helpers.js';
+
 /** yargs options for the writable contact fields (create/edit share these). */
 export function contactFieldOptions(yargs) {
-  return yargs
+  return localOptions(yargs)
     .option('company', { describe: 'Company name', type: 'string' })
     .option('type', { describe: 'Contact type', type: 'string', choices: ['customer', 'vendor'] })
     .option('sub-type', { describe: 'Customer sub-type', type: 'string', choices: ['business', 'individual'] })

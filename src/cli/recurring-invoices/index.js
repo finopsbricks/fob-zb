@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listRecurringInvoicesHandler } from './list.js';
 import { showRecurringInvoiceHandler } from './show.js';
 import { addRecurringCommands } from '../utils/document-write.js';
@@ -20,8 +20,7 @@ export function buildRecurringInvoicesSubcommands(yargs) {
       'show <id>',
       'Show a recurring invoice by id',
       (y) =>
-        y
-          .positional('id', { describe: 'Recurring invoice id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Recurring invoice id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showRecurringInvoiceHandler),
     );

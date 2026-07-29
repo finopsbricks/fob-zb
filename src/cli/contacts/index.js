@@ -2,7 +2,7 @@
  * Subtree builder for `fob-zb contacts <action>`.
  */
 
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listContactsHandler } from './list.js';
 import { showContactHandler } from './show.js';
 import { createContactHandler } from './create.js';
@@ -28,8 +28,7 @@ export function buildContactsSubcommands(yargs) {
       'show <id>',
       'Show a contact by id',
       (y) =>
-        y
-          .positional('id', { describe: 'Contact id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Contact id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showContactHandler),
     )
@@ -43,8 +42,7 @@ export function buildContactsSubcommands(yargs) {
       'edit <id>',
       'Update a contact (only passed flags change)',
       (y) =>
-        contactFieldOptions(y)
-          .positional('id', { describe: 'Contact id', type: 'string' })
+        contactFieldOptions(y.positional('id', { describe: 'Contact id', type: 'string' }))
           .option('name', { describe: 'Contact name', type: 'string' }),
       safe(editContactHandler),
     )
@@ -52,8 +50,7 @@ export function buildContactsSubcommands(yargs) {
       'delete <id>',
       'Delete a contact (requires --yes)',
       (y) =>
-        y
-          .positional('id', { describe: 'Contact id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Contact id', type: 'string' }))
           .option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }),
       safe(deleteContactHandler),
     )

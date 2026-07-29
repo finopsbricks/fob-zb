@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listRecurringBillsHandler } from './list.js';
 import { showRecurringBillHandler } from './show.js';
 import { addRecurringCommands } from '../utils/document-write.js';
@@ -20,8 +20,7 @@ export function buildRecurringBillsSubcommands(yargs) {
       'show <id>',
       'Show a recurring bill by id',
       (y) =>
-        y
-          .positional('id', { describe: 'Recurring bill id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Recurring bill id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showRecurringBillHandler),
     );

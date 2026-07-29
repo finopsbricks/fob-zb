@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listInvoicesHandler } from './list.js';
 import { showInvoiceHandler } from './show.js';
 import { invoiceFieldOptions } from './_body.js';
@@ -31,7 +31,7 @@ export function buildInvoicesSubcommands(yargs) {
     .command(
       'show <id>',
       'Show an invoice by id (with line items)',
-      (y) => idPos(y).option('json', { describe: 'Output raw JSON', type: 'boolean' }),
+      (y) => localOptions(idPos(y)).option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showInvoiceHandler),
     )
     .command(
@@ -46,14 +46,14 @@ export function buildInvoicesSubcommands(yargs) {
       (y) => invoiceFieldOptions(idPos(y)).option('customer', { describe: 'Customer id', type: 'string' }),
       safe(editInvoiceHandler),
     )
-    .command('delete <id>', 'Delete an invoice (requires --yes)', (y) => idPos(y).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }), safe(deleteInvoiceHandler))
+    .command('delete <id>', 'Delete an invoice (requires --yes)', (y) => localOptions(idPos(y)).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }), safe(deleteInvoiceHandler))
     .command('mark-sent <id>', 'Mark an invoice as sent', (y) => idPos(y), safe(markSentInvoiceHandler))
     .command('mark-void <id>', 'Void an invoice', (y) => idPos(y), safe(markVoidInvoiceHandler))
     .command(
       'email <id>',
       'Email an invoice to the customer',
       (y) =>
-        idPos(y)
+        localOptions(idPos(y))
           .option('to', { describe: 'Recipient emails (comma-separated); default: customer contacts', type: 'string' })
           .option('subject', { describe: 'Email subject', type: 'string' })
           .option('body', { describe: 'Email body', type: 'string' }),

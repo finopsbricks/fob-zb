@@ -7,6 +7,7 @@
  */
 import { safe } from '../_helpers.js';
 import { clientFor } from '../_helpers.js';
+import { localOptions } from '../_helpers.js';
 
 /** Parse one `k=v,k=v` --line string into a Zoho line-item object. */
 export function parseLine(str) {
@@ -27,7 +28,7 @@ export function parseLine(str) {
 
 /** Common document write-field yargs options (party + number added by the caller). */
 export function documentFieldOptions(yargs) {
-  return yargs
+  return localOptions(yargs)
     .option('date', { describe: 'Document date (YYYY-MM-DD)', type: 'string' })
     .option('reference', { describe: 'Reference number', type: 'string' })
     .option('notes', { describe: 'Notes', type: 'string' })
@@ -121,7 +122,7 @@ export function addDocumentWriteCommands(yargs, spec) {
     .command(
       'delete <id>',
       `Delete ${art} ${label} (requires --yes)`,
-      (y) => idPos(y).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }),
+      (y) => localOptions(idPos(y)).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }),
       safe(async (argv) => {
         if (!argv.yes) throw new Error(`Refusing to delete ${label} ${argv.id} without --yes (this is destructive).`);
         await clientFor()[namespace].delete(argv.id);
@@ -148,7 +149,7 @@ export function addDocumentWriteCommands(yargs, spec) {
     .command(
       'email <id>',
       `Email the ${label}`,
-      (y) => idPos(y).option('to', { describe: 'Recipient emails (comma-separated)', type: 'string' }).option('subject', { type: 'string', describe: 'Email subject' }).option('body', { type: 'string', describe: 'Email body' }),
+      (y) => localOptions(idPos(y)).option('to', { describe: 'Recipient emails (comma-separated)', type: 'string' }).option('subject', { type: 'string', describe: 'Email subject' }).option('body', { type: 'string', describe: 'Email body' }),
       safe(async (argv) => {
         const body = {};
         if (argv.to) body.to_mail_ids = String(argv.to).split(',').map((s) => s.trim()).filter(Boolean);

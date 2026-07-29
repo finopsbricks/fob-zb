@@ -1,8 +1,10 @@
 // @ts-check
 /** Shared item write-field options + argv→Zoho-body mapping (create/edit). */
 
+import { localOptions } from '../_helpers.js';
+
 export function itemFieldOptions(yargs) {
-  return yargs
+  return localOptions(yargs)
     .option('rate', { describe: 'Sales rate', type: 'number' })
     .option('sku', { describe: 'SKU', type: 'string' })
     .option('unit', { describe: 'Unit (e.g. pcs, hrs)', type: 'string' })

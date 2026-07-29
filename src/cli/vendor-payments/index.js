@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listVendorPaymentsHandler } from './list.js';
 import { showVendorPaymentHandler } from './show.js';
 import { createVendorPaymentHandler, deleteVendorPaymentHandler } from './create.js';
@@ -15,14 +15,14 @@ export function buildVendorPaymentsSubcommands(yargs) {
     .command(
       'show <id>',
       'Show a vendor payment by id',
-      (y) => y.positional('id', { describe: 'Payment id', type: 'string' }).option('json', { describe: 'Output raw JSON', type: 'boolean' }),
+      (y) => localOptions(y.positional('id', { describe: 'Payment id', type: 'string' })).option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showVendorPaymentHandler),
     )
     .command(
       'create',
       'Record a vendor payment (pay one or more bills)',
       (y) =>
-        y
+        localOptions(y)
           .option('vendor', { describe: 'Vendor id', type: 'string', demandOption: true })
           .option('amount', { describe: 'Payment amount', type: 'number', demandOption: true })
           .option('date', { describe: 'Payment date (YYYY-MM-DD)', type: 'string', demandOption: true })
@@ -37,7 +37,7 @@ export function buildVendorPaymentsSubcommands(yargs) {
     .command(
       'delete <id>',
       'Delete a vendor payment (requires --yes)',
-      (y) => y.positional('id', { describe: 'Payment id', type: 'string' }).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }),
+      (y) => localOptions(y.positional('id', { describe: 'Payment id', type: 'string' })).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }),
       safe(deleteVendorPaymentHandler),
     )
     .demandCommand(1, 'Specify an action: list, show, create, delete');

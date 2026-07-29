@@ -1,4 +1,4 @@
-import { safe } from '../_helpers.js';
+import { safe, localOptions } from '../_helpers.js';
 import { addConfigHandler } from './add.js';
 import { listConfigHandler } from './list.js';
 import { useConfigHandler } from './use.js';
@@ -18,21 +18,20 @@ function buildProfilesSubcommands(yargs) {
     .command(
       'list',
       'List profiles (current marked with *)',
-      (y) => y.option('json', { describe: 'Output raw JSON', type: 'boolean' }),
+      (y) => localOptions(y).option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(listConfigHandler),
     )
     .command(
       ['current', 'whoami'],
       'Show the active profile + resolution source',
-      (y) => y.option('json', { describe: 'Output raw JSON', type: 'boolean' }),
+      (y) => localOptions(y).option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(currentConfigHandler),
     )
     .command(
       'add <name>',
       "Add or update a profile's Zoho Books OAuth credentials (upsert)",
       (y) =>
-        y
-          .positional('name', { describe: 'Profile name', type: 'string' })
+        localOptions(y.positional('name', { describe: 'Profile name', type: 'string' }))
           .option('region', {
             describe: 'Zoho data center',
             type: 'string',
@@ -71,8 +70,7 @@ function buildProfilesSubcommands(yargs) {
       'refresh [name]',
       "Refresh a profile's org identity from the server (--all for every profile)",
       (y) =>
-        y
-          .positional('name', { describe: 'Profile name (omit with --all)', type: 'string' })
+        localOptions(y.positional('name', { describe: 'Profile name (omit with --all)', type: 'string' }))
           .option('all', { describe: 'Refresh every profile', type: 'boolean' }),
       safe(refreshConfigHandler),
     )

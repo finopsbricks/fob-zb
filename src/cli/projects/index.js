@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listProjectsHandler } from './list.js';
 import { showProjectHandler } from './show.js';
 
@@ -18,8 +18,7 @@ export function buildProjectsSubcommands(yargs) {
       'show <id>',
       'Show a project by id',
       (y) =>
-        y
-          .positional('id', { describe: 'Project id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Project id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showProjectHandler),
     )

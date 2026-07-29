@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listExpensesHandler } from './list.js';
 import { showExpenseHandler } from './show.js';
 
@@ -22,8 +22,7 @@ export function buildExpensesSubcommands(yargs) {
       'show <id>',
       'Show an expense by id',
       (y) =>
-        y
-          .positional('id', { describe: 'Expense id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Expense id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showExpenseHandler),
     )

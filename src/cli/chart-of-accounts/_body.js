@@ -1,6 +1,8 @@
 // @ts-check
 /** Shared chart-of-accounts write-field options + argv→Zoho-body mapping. */
 
+import { localOptions } from '../_helpers.js';
+
 // User-creatable account types (system types like input_tax are not creatable here).
 export const ACCOUNT_TYPES = [
   'other_asset', 'other_current_asset', 'cash', 'bank', 'fixed_asset', 'accounts_receivable',
@@ -9,7 +11,7 @@ export const ACCOUNT_TYPES = [
 ];
 
 export function accountFieldOptions(yargs) {
-  return yargs
+  return localOptions(yargs)
     .option('code', { describe: 'Account code', type: 'string' })
     .option('description', { describe: 'Description', type: 'string' })
     .option('parent', { describe: 'Parent account id', type: 'string' })

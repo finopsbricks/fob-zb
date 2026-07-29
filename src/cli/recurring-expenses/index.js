@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listRecurringExpensesHandler } from './list.js';
 import { showRecurringExpenseHandler } from './show.js';
 import { addRecurringCommands } from '../utils/document-write.js';
@@ -19,8 +19,7 @@ export function buildRecurringExpensesSubcommands(yargs) {
       'show <id>',
       'Show a recurring expense by id',
       (y) =>
-        y
-          .positional('id', { describe: 'Recurring expense id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Recurring expense id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showRecurringExpenseHandler),
     );

@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listBankTransactionsHandler } from './list.js';
 import { showBankTransactionHandler } from './show.js';
 import { CATEGORIZE_TARGETS } from './_body.js';
@@ -27,12 +27,12 @@ export function buildBankTransactionsSubcommands(yargs) {
           .option('status', { describe: 'Filter by categorization status', type: 'string', choices: ['all', 'uncategorized', 'categorized', 'matched', 'excluded'] }),
       safe(listBankTransactionsHandler),
     )
-    .command('show <id>', 'Show a bank transaction by id', (y) => idPos(y).option('json', { describe: 'Output raw JSON', type: 'boolean' }), safe(showBankTransactionHandler))
+    .command('show <id>', 'Show a bank transaction by id', (y) => localOptions(idPos(y)).option('json', { describe: 'Output raw JSON', type: 'boolean' }), safe(showBankTransactionHandler))
     .command(
       'create',
       'Manually add a bank transaction',
       (y) =>
-        y
+        localOptions(y)
           .option('account-id', { describe: 'Bank account id', type: 'string', demandOption: true })
           .option('type', { describe: 'Transaction type (deposit, transfer_fund, card_payment, ...)', type: 'string', demandOption: true })
           .option('amount', { describe: 'Amount', type: 'number', demandOption: true })
@@ -45,12 +45,12 @@ export function buildBankTransactionsSubcommands(yargs) {
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(createTransactionHandler),
     )
-    .command('delete <id>', 'Delete a bank transaction (requires --yes)', (y) => idPos(y).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }), safe(deleteTransactionHandler))
+    .command('delete <id>', 'Delete a bank transaction (requires --yes)', (y) => localOptions(idPos(y)).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }), safe(deleteTransactionHandler))
     .command(
       'categorize <id>',
       'Categorize an uncategorized transaction',
       (y) =>
-        idPos(y)
+        localOptions(idPos(y))
           .option('as', { describe: 'Categorize as', type: 'string', choices: Object.keys(CATEGORIZE_TARGETS), demandOption: true })
           .option('field', { describe: 'Body field "key=value" (repeatable; ids kept as strings)', type: 'string', array: true })
           .option('json-body', { describe: 'Full JSON body (merged over --field)', type: 'string' }),
@@ -60,7 +60,7 @@ export function buildBankTransactionsSubcommands(yargs) {
       'match <id>',
       'Match an uncategorized transaction to existing records',
       (y) =>
-        idPos(y)
+        localOptions(idPos(y))
           .option('field', { describe: 'Body field "key=value" (repeatable)', type: 'string', array: true })
           .option('json-body', { describe: 'Full JSON body (merged over --field)', type: 'string' }),
       safe(matchHandler),

@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listChartOfAccountsHandler } from './list.js';
 import { showChartOfAccountHandler } from './show.js';
 import { accountFieldOptions, buildAccountBody, ACCOUNT_TYPES } from './_body.js';
@@ -25,7 +25,7 @@ export function buildChartOfAccountsSubcommands(yargs) {
     .command(
       'show <id>',
       'Show a ledger account by id',
-      (y) => y.positional('id', { describe: 'Account id', type: 'string' }).option('json', { describe: 'Output raw JSON', type: 'boolean' }),
+      (y) => localOptions(y.positional('id', { describe: 'Account id', type: 'string' })).option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showChartOfAccountHandler),
     )
     .command(
@@ -41,8 +41,7 @@ export function buildChartOfAccountsSubcommands(yargs) {
       'edit <id>',
       'Update a ledger account (only passed flags change)',
       (y) =>
-        accountFieldOptions(y)
-          .positional('id', { describe: 'Account id', type: 'string' })
+        accountFieldOptions(y.positional('id', { describe: 'Account id', type: 'string' }))
           .option('name', { describe: 'Account name', type: 'string' })
           .option('type', { describe: 'Account type', type: 'string', choices: ACCOUNT_TYPES }),
       safe(w.edit),
@@ -50,7 +49,7 @@ export function buildChartOfAccountsSubcommands(yargs) {
     .command(
       'delete <id>',
       'Delete a ledger account (requires --yes)',
-      (y) => y.positional('id', { describe: 'Account id', type: 'string' }).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }),
+      (y) => localOptions(y.positional('id', { describe: 'Account id', type: 'string' })).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }),
       safe(w.remove),
     )
     .command('activate <id>', 'Mark an account active', (y) => y.positional('id', { describe: 'Account id', type: 'string' }), safe(w.activate))

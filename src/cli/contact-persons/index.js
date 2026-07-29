@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listContactPersonsHandler } from './list.js';
 import { showContactPersonHandler } from './show.js';
 
@@ -17,8 +17,7 @@ export function buildContactPersonsSubcommands(yargs) {
       'show <id>',
       'Show a contact person by id',
       (y) =>
-        y
-          .positional('id', { describe: 'Contact person id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Contact person id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showContactPersonHandler),
     )

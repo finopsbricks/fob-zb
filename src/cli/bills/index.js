@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listBillsHandler } from './list.js';
 import { showBillHandler } from './show.js';
 import { billFieldOptions } from './_body.js';
@@ -28,7 +28,7 @@ export function buildBillsSubcommands(yargs) {
     .command(
       'show <id>',
       'Show a bill by id (with line items)',
-      (y) => idPos(y).option('json', { describe: 'Output raw JSON', type: 'boolean' }),
+      (y) => localOptions(idPos(y)).option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showBillHandler),
     )
     .command(
@@ -43,7 +43,7 @@ export function buildBillsSubcommands(yargs) {
       (y) => billFieldOptions(idPos(y)).option('vendor', { describe: 'Vendor id', type: 'string' }),
       safe(editBillHandler),
     )
-    .command('delete <id>', 'Delete a bill (requires --yes)', (y) => idPos(y).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }), safe(deleteBillHandler))
+    .command('delete <id>', 'Delete a bill (requires --yes)', (y) => localOptions(idPos(y)).option('yes', { describe: 'Confirm deletion', type: 'boolean', alias: 'y' }), safe(deleteBillHandler))
     .command('mark-open <id>', 'Mark a bill as open', (y) => idPos(y), safe(markOpenBillHandler))
     .command('mark-void <id>', 'Void a bill', (y) => idPos(y), safe(markVoidBillHandler))
     .demandCommand(1, 'Specify an action: list, show, create, edit, delete, mark-open, mark-void');

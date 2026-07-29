@@ -1,4 +1,4 @@
-import { safe, paginationOptions, listOutputOptions } from '../_helpers.js';
+import { safe, paginationOptions, listOutputOptions, localOptions } from '../_helpers.js';
 import { listCustomerPaymentsHandler } from './list.js';
 import { showCustomerPaymentHandler } from './show.js';
 
@@ -18,8 +18,7 @@ export function buildCustomerPaymentsSubcommands(yargs) {
       'show <id>',
       'Show a customer payment by id',
       (y) =>
-        y
-          .positional('id', { describe: 'Payment id', type: 'string' })
+        localOptions(y.positional('id', { describe: 'Payment id', type: 'string' }))
           .option('json', { describe: 'Output raw JSON', type: 'boolean' }),
       safe(showCustomerPaymentHandler),
     )
