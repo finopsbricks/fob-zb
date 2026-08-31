@@ -1,4 +1,4 @@
-# @fob/zb
+# @finopsbricks/fob-zb
 
 Zoho Books client **and** the `fob-zb` CLI in one package (a 2-in-1). Import the client in a
 worker, or drive the same functions from the terminal.
@@ -10,7 +10,7 @@ data-center routing, all behind one credentials seam.
 ## As a library (workers)
 
 ```js
-import { fobZb } from '@fob/zb';
+import { fobZb } from '@finopsbricks/fob-zb';
 
 // Credentials from the worker's own env, or an explicit override per call.
 const zb = fobZb({

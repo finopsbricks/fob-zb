@@ -1,10 +1,10 @@
 // @ts-check
 /**
- * @fob/zb — the importable Zoho Books client.
+ * @finopsbricks/fob-zb — the importable Zoho Books client.
  *
  * Construct a client with credentials bound once, then call resource namespaces:
  *
- *   import { fobZb } from '@fob/zb';
+ *   import { fobZb } from '@finopsbricks/fob-zb';
  *   const zb = fobZb({ client_id, client_secret, refresh_token, organization_id });
  *   const { data } = await zb.organizations.list();
  *   const org = await zb.organizations.get(id);
