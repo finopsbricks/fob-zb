@@ -1,7 +1,7 @@
 import { addProfile, getProfile } from '../config-store.js';
 import { exchangeGrantCode, DEFAULT_REGION, apiConsoleUrl } from '../../oauth.js';
 import { CREDENTIALS_DOCS_URL } from '../../links.js';
-import { refreshIdentity } from './_identity.js';
+import { refreshIdentity, chooseOrganization } from './_identity.js';
 
 /** OAuth fields `--from` copies. Zoho tokens belong to the user, not the org, so
  *  one Self Client + refresh token serves every org that login can see. */
@@ -76,15 +76,17 @@ export async function addConfigHandler(argv) {
   console.log(`Saved Zoho Books credentials for profile '${argv.name}'.`);
 
   // Best-effort self-describe. Never blocks the save.
-  const resolved = await refreshIdentity(argv.name);
+  const { resolved, orgs } = await refreshIdentity(argv.name);
   if (resolved) {
     console.log(`Resolved organization for '${argv.name}'.`);
+  } else if (orgs) {
+    const org = await chooseOrganization(argv.name, orgs);
+    if (org) console.log(`Profile '${argv.name}' now uses ${org.name} (${org.organization_id}).`);
   } else if (!merged.organization_id) {
     console.error(
-      'Could not auto-resolve organization_id (multiple or zero orgs, or a fetch error). ' +
-        'Run `fob-zb organizations list`, then `fob-zb config profiles add ' +
-        argv.name +
-        ' --organization-id <id>`.',
+      'Could not resolve the organization (no organizations found, or a fetch error). ' +
+        'Credentials are saved — no new grant code needed. Run `fob-zb organizations list`, then ' +
+        `\`fob-zb config profiles add ${argv.name} --organization-id <id>\`.`,
     );
   }
 }

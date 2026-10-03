@@ -2,6 +2,7 @@ import { jest } from '@jest/globals';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { PassThrough } from 'node:stream';
 import { captureOutput } from './helpers.js';
 
 // Throwaway config dir + no ambient env creds BEFORE import (the store resolves
@@ -15,6 +16,7 @@ for (const k of ['FOB_ZB_CLIENT_ID', 'FOB_ZB_CLIENT_SECRET', 'FOB_ZB_REFRESH_TOK
 const store = await import('../src/cli/config-store.js');
 const { gettingStartedHandler } = await import('../src/cli/getting-started.js');
 const { addConfigHandler } = await import('../src/cli/config/add.js');
+const { promptForOrganization } = await import('../src/cli/config/_identity.js');
 const { apiConsoleUrl, exchangeGrantCode } = await import('../src/oauth.js');
 const { TROUBLESHOOTING_DOCS_URL } = await import('../src/links.js');
 
@@ -89,5 +91,65 @@ describe('token errors', () => {
     }));
     await expect(exchangeGrantCode({ client_id: 'c', client_secret: 's', code: 'x' }))
       .rejects.toThrow(`${TROUBLESHOOTING_DOCS_URL}#invalid-client`);
+  });
+});
+
+describe('config profiles add with several organizations', () => {
+  const ORGS = [
+    { organization_id: '111', name: 'Alpha', currency_code: 'INR', country: 'India', is_default_org: false },
+    { organization_id: '222', name: 'Beta', currency_code: 'INR', country: 'India', is_default_org: true },
+  ];
+
+  /** Stub Zoho: token endpoint + GET /organizations. */
+  const zohoWithOrgs = () =>
+    jest.fn(async (url) => ({
+      ok: true, status: 200, statusText: 'OK', headers: { get: () => null },
+      text: async () => JSON.stringify(
+        String(url).includes('/oauth/')
+          ? { access_token: 'AT', expires_in: 3600 }
+          : { code: 0, organizations: ORGS },
+      ),
+    }));
+
+  it('without a terminal, prints the org list and the follow-up command', async () => {
+    global.fetch = zohoWithOrgs();
+    await addConfigHandler({ name: 'multi', clientId: 'c', clientSecret: 's', refreshToken: 'r' });
+
+    expect(out.stderr).toContain('can see 2 organizations');
+    expect(out.stderr).toMatch(/111\s+Alpha/);
+    expect(out.stderr).toMatch(/222\s+Beta/);
+    expect(out.stderr).toContain('no new grant code needed');
+    expect(out.stderr).toContain('fob-zb config profiles add multi --organization-id <ORG ID>');
+    expect(store.getProfile('multi').organization_id).toBeUndefined();
+  });
+
+  const pick = async (answers) => {
+    const input = new PassThrough();
+    const output = new PassThrough();
+    output.resume();
+    const p = promptForOrganization(ORGS, { input, output });
+    for (const a of answers) input.write(`${a}\n`);
+    return p;
+  };
+
+  it('picks by number', async () => {
+    expect((await pick(['1'])).name).toBe('Alpha');
+  });
+
+  it('Enter picks the Zoho default org', async () => {
+    expect((await pick([''])).name).toBe('Beta');
+  });
+
+  it('accepts an org id and re-asks on bad input', async () => {
+    expect((await pick(['9', '111'])).name).toBe('Alpha');
+  });
+
+  it('resolves null when input closes', async () => {
+    const input = new PassThrough();
+    const output = new PassThrough();
+    output.resume();
+    const p = promptForOrganization(ORGS, { input, output });
+    input.end();
+    expect(await p).toBeNull();
   });
 });

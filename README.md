@@ -49,7 +49,9 @@ fob-zb invoices list --status overdue
 ```
 
 If your Zoho login can see one organization, the profile picks it up automatically. If it
-can see several, run `fob-zb organizations list` and pass `--organization-id <id>`.
+can see several, `add` lists them and asks which one to use. Without a terminal (scripts,
+agents) it prints the list and the follow-up command; pass `--organization-id <id>` to skip the
+question.
 
 **More organizations, same login:** Zoho tokens belong to the user, not the organization.
 Reuse an existing profile's credentials instead of creating another Self Client:
