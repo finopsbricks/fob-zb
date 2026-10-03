@@ -1,72 +1,84 @@
-# @finopsbricks/fob-zb
+# fob-zb — Zoho Books CLI and client library
 
-Zoho Books client **and** the `fob-zb` CLI in one package (a 2-in-1). Import the client in a
-worker, or drive the same functions from the terminal.
+Work with your Zoho Books organization from the terminal, from an AI agent, or from Node code.
+One package, two ways in:
 
-Built to the CLI standard: `engineering-standards/cli/`. Unlike the api-key siblings, Zoho Books
-uses **OAuth2** — the client owns access-token refresh, `organization_id` injection, and
-data-center routing, all behind one credentials seam.
+- **The CLI** (`fob-zb`): list, inspect and update invoices, bills, contacts, bank transactions
+  and 22 other resources. Scriptable output (`--json`, `--format csv`), and agent-friendly.
+  → [finopsbricks.com/cli/fob-zb](https://finopsbricks.com/cli/fob-zb)
+- **The library** (`import { fobZb }`): the same resources as a Node client for workers and
+  automated pipelines. OAuth token refresh, organization routing and data centers are handled.
+  → [Docs](https://finopsbricks.com/docs/zoho-books)
 
-## As a library (workers)
+Beta. Not affiliated with or endorsed by Zoho Corporation. "Zoho" and "Zoho Books" are
+trademarks of Zoho Corporation.
 
-```js
-import { fobZb } from '@finopsbricks/fob-zb';
-
-// Credentials from the worker's own env, or an explicit override per call.
-const zb = fobZb({
-  client_id, client_secret, refresh_token,   // OAuth
-  organization_id,                           // Zoho tenant
-  region: 'com',                             // data center (default 'com')
-});
-
-const { data: orgs } = await zb.organizations.list();   // list tenants
-const org = await zb.organizations.get(organization_id);
-```
-
-The client refreshes the OAuth access token on demand (1-hour lifetime) from the refresh token —
-callers never mint tokens. See `src/index.js`.
-
-## As a CLI
+## Install
 
 ```bash
-# 1. Create a Self Client at api-console.zoho.com, pick scopes (ZohoBooks.fullaccess.all),
-#    generate a grant code, then:
+npm install -g @finopsbricks/fob-zb
+fob-zb getting-started
+```
+
+Requires Node.js 18 or later. If you use the [`fob` dispatcher](https://www.npmjs.com/package/@finopsbricks/fob-cli),
+`fob zb …` and `fob-zb …` are the same command.
+
+## Connect your Zoho Books organization
+
+You need a Zoho **Self Client**: a client ID, a client secret and a one-time grant code.
+`fob-zb getting-started` prints these steps with the right links for your region.
+
+1. Open the Zoho API Console **for your data center**. Use `api-console.zoho.com` (US),
+   `.eu`, `.in`, `.com.au`, `.jp`, `api-console.zohocloud.ca`, `.com.cn` or `.sa`. A client only
+   works in the region it was created in.
+2. Choose **Get Started** (or **Add Client**) → **Self Client** → **Create**. The
+   **Client Secret** tab shows the Client ID and Client Secret.
+3. On the **Generate Code** tab, enter scope `ZohoBooks.fullaccess.all`, a duration of
+   10 minutes and any description. Choose **Create**, pick your organization and copy the code.
+4. Add a profile before the code expires. Each code works once only.
+
+```bash
 fob-zb config profiles add acme \
   --region com \
   --client-id 1000.XXXX --client-secret yyyy \
-  --grant-code 1000.abc...            # exchanged for a long-lived refresh token
+  --grant-code 1000.zzzz          # exchanged for a long-lived refresh token
 
-fob-zb config profiles use acme
-fob-zb auth status                    # identity, region, token freshness
-
-# 2. Discover your organization_id, then pin it to the profile:
-fob-zb organizations list
-fob-zb config profiles add acme --organization-id 8927xxxxxx
-
-fob-zb organizations list --json
-fob-zb organizations show 8927xxxxxx
+fob-zb config profiles current    # confirm the profile and organization
+fob-zb invoices list --status overdue
 ```
 
-Grammar: `fob-zb <resource> <action> [target] [options]`. Every read command supports `--json`.
-`--profile <name>` (alias `--org`) overrides the current profile for one command.
+If your Zoho login can see one organization, the profile picks it up automatically. If it
+can see several, run `fob-zb organizations list` and pass `--organization-id <id>`.
 
-### Credentials
+**More organizations, same login:** Zoho tokens belong to the user, not the organization.
+Reuse an existing profile's credentials instead of creating another Self Client:
 
-Precedence: `--profile` flag → `FOB_ZB_*` env (full set) → current profile in
-`~/.fob/fob-zb/config.yml` (mode 0600). Override the config dir with `FOB_ZB_CONFIG_DIR`.
+```bash
+fob-zb config profiles add second-org --from acme --organization-id 8927xxxxxx
+```
 
-Env set (for workers or a config-less CLI): `FOB_ZB_CLIENT_ID`, `FOB_ZB_CLIENT_SECRET`,
-`FOB_ZB_REFRESH_TOKEN`, `FOB_ZB_ORGANIZATION_ID`, `FOB_ZB_REGION`. See `.env.example`.
+Revoking that refresh token (or deleting the Self Client) disconnects every profile that
+shares it. Full guide with screenshots: [Zoho credentials](https://finopsbricks.com/docs/zoho-books/zoho-credentials).
 
-Data centers: `com`, `eu`, `in`, `com.au`, `jp`, `ca`, `com.cn`, `sa`. The client auto-detects the
-API host from the token response's `api_domain`.
+## Use the CLI
 
-## CLI surface
+Grammar: `fob-zb <resource> <action> [target] [options]`. Run `fob-zb <resource>` to see its
+actions, or `fob-zb <resource> <action> --help` for flags.
 
-Meta: `config` (profiles: add/list/use/remove/current/refresh), `auth` (status/refresh/logout).
+```bash
+fob-zb invoices list --status overdue
+fob-zb invoices show <id>                                 # with line items
+fob-zb invoices create --customer <id> --item <id> --quantity 2 --rate 5000
+fob-zb contacts list --type customer
+fob-zb bank-accounts list --format csv --fields account_name,account_type,balance
+fob-zb vendor-payments create --vendor <id> --amount 1500 --date 2026-07-26 --paid-through <id> --bill <id>
+```
 
-**26 resources**, all with `list` + `show` (`--json`, `--fields`, `--format table|csv|json`,
-`--output`, `--page`/`--per-page`, per-resource filters):
+Every `list` supports `--json`, `--fields`, `--format table|csv|json`, `--output <file>` and
+`--page`/`--per-page`. Formats csv and json fetch every page. `--profile <name>` (alias
+`--org`) switches organization for one command.
+
+**26 resources**, all with `list` and `show`:
 
 - **Sales/AR:** `contacts`, `estimates`, `sales-orders`, `invoices`, `recurring-invoices`,
   `credit-notes`, `retainer-invoices`, `customer-payments`
@@ -77,31 +89,56 @@ Meta: `config` (profiles: add/list/use/remove/current/refresh), `auth` (status/r
 - **Projects:** `projects`, `time-entries`
 - **Settings:** `organizations`, `users`, `taxes`, `currencies`, `contact-persons`
 
-Write surface (create/edit/delete + custom actions) on: `contacts`, `items`, `chart-of-accounts`,
-`bank-accounts` (+ activate/deactivate); `invoices` (mark-sent/void, email, writeoff),
-`estimates`/`sales-orders`/`credit-notes`/`purchase-orders` (mark-*, submit, approve, email);
-`bills` (mark-open/void); `vendor-payments` (record bill payments); `bank-transactions`
-(categorize/match/exclude); `recurring-*` (stop/resume).
+**Writes** (create/edit/delete plus actions) on: `contacts`, `items`, `chart-of-accounts`,
+`bank-accounts` (activate/deactivate); `invoices` (mark-sent, void, email, write-off);
+`estimates`, `sales-orders`, `credit-notes`, `purchase-orders` (mark-*, submit, approve, email);
+`bills` (mark-open, void); `vendor-payments` (record bill payments); `bank-transactions`
+(categorize, match, exclude); `recurring-*` (stop, resume). Try writes on a test
+organization first.
 
-```bash
-fob-zb invoices list --status overdue
-fob-zb invoices show <id>                                 # with line items
-fob-zb invoices create --customer <id> --item <id> --quantity 2 --rate 5000
-fob-zb contacts list --type customer                      # (--type / --status mutually exclusive; Zoho limit)
-fob-zb bank-accounts list --format csv --fields account_name,account_type,balance
-fob-zb vendor-payments create --vendor <id> --amount 1500 --date 2026-07-26 --paid-through <id> --bill <id>
+### With an AI agent
+
+Agents can drive the CLI directly. Tell your agent to run `fob-zb getting-started` first. It
+reports an existing setup, or walks through connecting one without inventing credentials.
+For question-only agents, consider a Self Client with read-only scopes.
+Guide: [Use with AI agents](https://finopsbricks.com/docs/zoho-books/cli/ai-agents).
+
+## Use as a library
+
+```js
+import { fobZb } from '@finopsbricks/fob-zb';
+
+const zb = fobZb({
+  client_id, client_secret, refresh_token,   // OAuth (see "Connect" above)
+  organization_id,                           // Zoho organization
+  region: 'com',                             // data center (default 'com')
+});
+
+const { data: overdue } = await zb.invoices.list({ status: 'overdue' });
+const org = await zb.organizations.get(organization_id);
 ```
 
-Run `fob-zb <resource>` to see a resource's actions, or `fob-zb <resource> <action> --help`.
+The client refreshes the one-hour access token from the refresh token on demand. Callers never
+mint tokens.
 
-## Status
+## Credentials and configuration
 
-Phases 0–4 complete: OAuth2 transport, config/auth, the read surface for all 26 resources, and the
-write surface for the core + document resources. Read layer + core writes live-validated against a
-real org; document/recurring writes validated on a throwaway test org. See
-`docs/wip/fob-zb-implementation.md` for the detail and the small set of remaining items
-(bank-transactions categorize/match need live bank-feed data; `bank-rules` and
-`base-currency-adjustments` not yet built).
+Precedence: `--profile` flag → `FOB_ZB_*` env → current profile in `~/.fob/fob-zb/config.yml`
+(file mode 0600; override the directory with `FOB_ZB_CONFIG_DIR`).
+
+The env path needs `FOB_ZB_CLIENT_ID`, `FOB_ZB_CLIENT_SECRET`, `FOB_ZB_REFRESH_TOKEN` and
+`FOB_ZB_ORGANIZATION_ID`. `FOB_ZB_REGION` is optional. See `.env.example`.
+
+Data centers: `com`, `eu`, `in`, `com.au`, `jp`, `ca`, `com.cn`, `sa`. The API host is taken
+from the token response's `api_domain`.
+
+Set `FOB_DEBUG=1` to see stack traces. Error messages link to
+[troubleshooting](https://finopsbricks.com/docs/zoho-books/troubleshooting).
+
+## Beta limits
+
+- `bank-rules` and `base-currency-adjustments` are not built yet.
+- `bank-transactions categorize` and `match` have not been validated against a live bank feed.
 
 ## Develop
 
@@ -110,3 +147,7 @@ npm install
 npm test          # jest (ESM)
 npm run typecheck # tsc against jsconfig (@ts-check)
 ```
+
+## License
+
+Apache-2.0. See `LICENSE` and `NOTICE`.

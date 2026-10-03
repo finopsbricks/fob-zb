@@ -11,6 +11,9 @@
 import yargs from 'yargs';
 
 import { setProfileOverride } from './config-store.js';
+import { safe } from './_helpers.js';
+import { gettingStartedHandler } from './getting-started.js';
+import { DOCS_URL, LANDING_URL } from '../links.js';
 import { buildConfigSubcommands } from './config/index.js';
 import { buildAuthSubcommands } from './auth/index.js';
 import { buildOrganizationsSubcommands } from './organizations/index.js';
@@ -53,6 +56,7 @@ export function run(argv) {
     .middleware((argv) => {
       if (argv.profile) setProfileOverride(argv.profile);
     })
+    .command('getting-started', 'Setup walkthrough: connect a Zoho Books organization', () => {}, safe(gettingStartedHandler))
     .command('config <resource>', 'Manage credential profiles (alias: orgs)', buildConfigSubcommands)
     .command('auth <action>', 'OAuth token operations (status, refresh, logout)', buildAuthSubcommands)
     .command('organizations <action>', 'List/show Zoho organizations (tenants)', buildOrganizationsSubcommands)
@@ -82,7 +86,8 @@ export function run(argv) {
     .command('taxes <action>', 'List/show taxes', buildTaxesSubcommands)
     .command('currencies <action>', 'List/show currencies', buildCurrenciesSubcommands)
     .command('contact-persons <action>', 'List/show contact persons', buildContactPersonsSubcommands)
-    .demandCommand(1, 'Specify a resource. Try `fob-zb --help`.')
+    .demandCommand(1, 'Specify a resource. New here? Run `fob-zb getting-started`.')
+    .epilogue(`New here? Run \`fob-zb getting-started\`.\nDocs:  ${DOCS_URL}\nAbout: ${LANDING_URL}`)
     .strict()
     .help()
     .alias('h', 'help')

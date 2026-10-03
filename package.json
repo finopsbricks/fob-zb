@@ -1,7 +1,7 @@
 {
   "name": "@finopsbricks/fob-zb",
   "version": "0.1.1",
-  "description": "Zoho Books client + fob-zb CLI (2-in-1). Import the client in workers, or use the CLI.",
+  "description": "Zoho Books from the terminal and from Node: a CLI for people and AI agents, plus a client library for workers. 26 resources, OAuth handled.",
   "type": "module",
   "main": "src/index.js",
   "exports": {
@@ -19,12 +19,19 @@
   },
   "keywords": [
     "zoho-books",
+    "zoho",
+    "zoho-books-api",
+    "zoho-books-cli",
     "accounting",
+    "bookkeeping",
+    "invoices",
     "api-client",
     "cli",
+    "ai-agents",
     "finops"
   ],
   "license": "Apache-2.0",
+  "homepage": "https://finopsbricks.com/cli/fob-zb",
   "files": [
     "bin",
     "src",

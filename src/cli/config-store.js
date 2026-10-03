@@ -204,7 +204,7 @@ export function resolveCredentials() {
   }
 
   throw new Error(
-    'No Zoho Books profile selected. Run `fob-zb config profiles add <name>` (or set FOB_ZB_* env).',
+    'No Zoho Books profile selected. Run `fob-zb getting-started` to connect one (or set FOB_ZB_* env).',
   );
 }
 

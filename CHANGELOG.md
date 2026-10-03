@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `fob-zb getting-started`: setup walkthrough for people and AI agents. It reports an existing setup, or lists each region's Zoho API Console, the Self Client steps and the `profiles add` command.
+- `config profiles add --from <profile>`: reuse another profile's OAuth credentials to add a second organization without a new Self Client.
+- `apiConsoleUrl(region)` export: the region's Zoho API Console URL.
+- `--help` footer with the getting-started hint and links to the docs and landing page.
+
+### Changed
+- Token errors (`invalid_code`, `invalid_client`, `invalid_grant`, other) link to the matching troubleshooting section.
+- Missing-credential errors in `config profiles add` name the region-specific API Console and link the credentials guide. The no-profile error points to `getting-started`.
+- README rewritten for first-time users: split into CLI and library, with step-by-step Self Client setup, multiple organizations, Beta limits and a trademark notice.
+- `package.json`: `homepage`, a clearer description and keywords.
+
 ## [0.1.1] - 2026-07-29
 
 ### Changed

@@ -14,6 +14,8 @@
  *  - Access tokens live ~1 hour; refresh tokens do not expire until revoked.
  */
 
+import { TROUBLESHOOTING_DOCS_URL } from './links.js';
+
 /** Region → { api host, accounts (OAuth) host }. */
 export const REGIONS = {
   com: { api: 'https://www.zohoapis.com', accounts: 'https://accounts.zoho.com' },
@@ -74,6 +76,16 @@ export function accountsBase(credentials) {
 }
 
 /**
+ * Zoho API Console for a region — where a Self Client (client id/secret +
+ * grant code) is created. It shares the region's accounts domain, so a client
+ * made in one region's console only works in that region.
+ * @param {string} [region]
+ */
+export function apiConsoleUrl(region) {
+  return regionOf(region).accounts.replace('//accounts.', '//api-console.');
+}
+
+/**
  * POST to the region's token endpoint. Treats a 200 with an `{ error }` body as
  * a failure (Zoho's convention).
  * @param {string} accountsUrl
@@ -112,17 +124,18 @@ async function tokenRequest(accountsUrl, params) {
   return data;
 }
 
-/** Map Zoho's terse token error codes to actionable messages. */
+/** Map Zoho's terse token error codes to actionable messages, each linking its fix. */
 function zohoTokenErrorMessage(error) {
+  const fix = (anchor) => ` See ${TROUBLESHOOTING_DOCS_URL}#${anchor}`;
   switch (error) {
     case 'invalid_code':
-      return 'Grant code is invalid or already used (they are single-use and short-lived). Generate a fresh one.';
+      return 'Grant code is invalid or already used (they are single-use and short-lived). Generate a fresh one.' + fix('invalid-code');
     case 'invalid_client':
-      return 'client_id / client_secret is invalid, or does not match this data center (region).';
+      return 'client_id / client_secret is invalid, or does not match this data center (region).' + fix('invalid-client');
     case 'invalid_grant':
-      return 'Refresh token is invalid or has been revoked. Re-run the consent flow.';
+      return 'Refresh token is invalid or has been revoked. Generate a new grant code and re-add the profile.' + fix('invalid-grant');
     default:
-      return error ? `Zoho token error: ${error}` : 'Zoho token request failed.';
+      return (error ? `Zoho token error: ${error}.` : 'Zoho token request failed.') + fix('token-errors');
   }
 }
 

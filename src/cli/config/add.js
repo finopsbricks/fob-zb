@@ -1,12 +1,18 @@
 import { addProfile, getProfile } from '../config-store.js';
-import { exchangeGrantCode, DEFAULT_REGION } from '../../oauth.js';
+import { exchangeGrantCode, DEFAULT_REGION, apiConsoleUrl } from '../../oauth.js';
+import { CREDENTIALS_DOCS_URL } from '../../links.js';
 import { refreshIdentity } from './_identity.js';
+
+/** OAuth fields `--from` copies. Zoho tokens belong to the user, not the org, so
+ *  one Self Client + refresh token serves every org that login can see. */
+const SHARED_CREDENTIAL_FIELDS = ['region', 'client_id', 'client_secret', 'refresh_token', 'api_domain'];
 
 /**
  * Add or update a profile's Zoho Books OAuth credentials (upsert — only the
  * flags you pass are changed). For a brand-new profile you need client id +
  * secret and one of `--grant-code` (exchanged for a refresh token) or an
- * existing `--refresh-token`.
+ * existing `--refresh-token` — or `--from <profile>` to reuse another
+ * profile's credentials for a different organization.
  */
 export async function addConfigHandler(argv) {
   let existing = {};
@@ -17,18 +23,24 @@ export async function addConfigHandler(argv) {
   }
 
   const fields = {};
+  if (argv.from) {
+    if (argv.from === argv.name) throw new Error('--from must name a different profile.');
+    const source = getProfile(argv.from);
+    for (const k of SHARED_CREDENTIAL_FIELDS) if (source[k]) fields[k] = source[k];
+  }
   if (argv.region) fields.region = argv.region;
   if (argv.clientId) fields.client_id = argv.clientId;
   if (argv.clientSecret) fields.client_secret = argv.clientSecret;
   if (argv.organizationId) fields.organization_id = argv.organizationId;
 
   const region = fields.region || existing.region || DEFAULT_REGION;
+  const where = `Create them in the Zoho API Console (${apiConsoleUrl(region)}) → Self Client. Guide: ${CREDENTIALS_DOCS_URL}`;
   const clientId = fields.client_id || existing.client_id;
   const clientSecret = fields.client_secret || existing.client_secret;
 
   if (argv.grantCode) {
     if (!clientId || !clientSecret) {
-      throw new Error('--client-id and --client-secret are required to exchange a --grant-code.');
+      throw new Error(`--client-id and --client-secret are required to exchange a --grant-code. ${where}`);
     }
     const tok = await exchangeGrantCode({
       client_id: clientId,
@@ -55,7 +67,8 @@ export async function addConfigHandler(argv) {
   if (missing.length) {
     throw new Error(
       `Profile '${argv.name}' is missing: ${missing.join(', ')}. ` +
-        'Provide --client-id, --client-secret, and --grant-code (or --refresh-token).',
+        'Provide --client-id, --client-secret, and --grant-code (or --refresh-token), ' +
+        `or --from <profile> to reuse another profile's credentials. ${where}`,
     );
   }
 

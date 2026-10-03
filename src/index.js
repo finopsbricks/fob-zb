@@ -165,6 +165,7 @@ export {
   regionOf,
   apiBase,
   accountsBase,
+  apiConsoleUrl,
   exchangeGrantCode,
   refreshAccessToken,
   revokeRefreshToken,

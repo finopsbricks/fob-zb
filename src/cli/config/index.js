@@ -48,6 +48,10 @@ function buildProfilesSubcommands(yargs) {
             type: 'string',
           })
           .option('organization-id', { describe: 'Zoho organization (tenant) id', type: 'string' })
+          .option('from', {
+            describe: "Reuse another profile's OAuth credentials (add a second org without a new Self Client)",
+            type: 'string',
+          })
           .option('redirect-uri', {
             describe: 'Redirect URI (only for web auth-code grants, not self-client)',
             type: 'string',
