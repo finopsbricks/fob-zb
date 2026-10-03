@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-03
+
 ### Changed
 - `config profiles add` / `refresh`: when the Zoho login can see several organizations, list them and ask which one the profile should use (Enter picks Zoho's default org). Without a terminal, print the list and the exact `--organization-id` follow-up instead, and say the credentials are already saved, so no new grant code is needed.
 
