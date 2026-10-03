@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-03
+
+### Added
+- File uploads in the library: the transport's `upload(path, file)` sends one file as `multipart/form-data`, using Node's built-in `FormData`. It shares token refresh, the 401 retry and the 429 backoff with every other request.
+- `bills.addAttachment(id, file)`: attach a PDF or image to a bill.
+- `expenses.create` / `update` / `delete`, and `expenses.addReceipt(id, file)`.
+
+### Notes
+- Draft bills: pass `is_draft: true` in the `bills.create` body. Zoho ignores `status: 'draft'` and creates the bill open.
+
 ## [0.3.0] - 2026-10-03
 
 ### Changed

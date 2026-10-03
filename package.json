@@ -1,6 +1,6 @@
 {
   "name": "@finopsbricks/fob-zb",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Zoho Books from the terminal and from Node: a CLI for people and AI agents, plus a client library for workers. 26 resources, OAuth handled.",
   "type": "module",
   "main": "src/index.js",
