@@ -4,7 +4,7 @@ Work with your Zoho Books organization from the terminal, from an AI agent, or f
 One package, two ways in:
 
 - **The CLI** (`fob-zb`): list, inspect and update invoices, bills, contacts, bank transactions
-  and 22 other resources. Scriptable output (`--json`, `--format csv`), and agent-friendly.
+  and 23 other resources. Scriptable output (`--json`, `--format csv`), and agent-friendly.
   → [finopsbricks.com/cli/fob-zb](https://finopsbricks.com/cli/fob-zb)
 - **The library** (`import { fobZb }`): the same resources as a Node client for workers and
   automated pipelines. OAuth token refresh, organization routing and data centers are handled.
@@ -31,7 +31,8 @@ You need a Zoho **Self Client**: a client ID, a client secret and a one-time gra
 1. Open the Zoho API Console **for your data center**. Use `api-console.zoho.com` (US),
    `.eu`, `.in`, `.com.au`, `.jp`, `api-console.zohocloud.ca`, `.com.cn` or `.sa`. A client only
    works in the region it was created in.
-2. Choose **Get Started** (or **Add Client**) → **Self Client** → **Create**. The
+2. Choose **Get Started** (or **Add Client**), hover over **Self Client**, then **Create Now** →
+   **Create** → **OK**. The
    **Client Secret** tab shows the Client ID and Client Secret.
 3. On the **Generate Code** tab, enter scope `ZohoBooks.fullaccess.all`, a duration of
    10 minutes and any description. Choose **Create**, pick your organization and copy the code.
@@ -78,7 +79,7 @@ Every `list` supports `--json`, `--fields`, `--format table|csv|json`, `--output
 `--page`/`--per-page`. Formats csv and json fetch every page. `--profile <name>` (alias
 `--org`) switches organization for one command.
 
-**26 resources**, all with `list` and `show`:
+**27 resources**, all with `list` and `show`:
 
 - **Sales/AR:** `contacts`, `estimates`, `sales-orders`, `invoices`, `recurring-invoices`,
   `credit-notes`, `retainer-invoices`, `customer-payments`
@@ -89,12 +90,13 @@ Every `list` supports `--json`, `--fields`, `--format table|csv|json`, `--output
 - **Projects:** `projects`, `time-entries`
 - **Settings:** `organizations`, `users`, `taxes`, `currencies`, `contact-persons`
 
-**Writes** (create/edit/delete plus actions) on: `contacts`, `items`, `chart-of-accounts`,
-`bank-accounts` (activate/deactivate); `invoices` (mark-sent, void, email, write-off);
-`estimates`, `sales-orders`, `credit-notes`, `purchase-orders` (mark-*, submit, approve, email);
-`bills` (mark-open, void); `vendor-payments` (record bill payments); `bank-transactions`
-(categorize, match, exclude); `recurring-*` (stop, resume). Try writes on a test
-organization first.
+**Writes:** create/edit/delete on `contacts`, `items`, `chart-of-accounts` and `bank-accounts`
+(plus `activate`/`deactivate`); `invoices` (plus `mark-sent`, `mark-void`, `email`, `writeoff`,
+`cancel-writeoff`); `estimates`, `sales-orders`, `credit-notes` and `purchase-orders` (plus
+`mark-*`, `submit`, `approve`, `email`); `bills` (plus `mark-open`, `mark-void`). Also
+`vendor-payments create`/`delete`; `bank-transactions` `create`, `delete`, `categorize`, `match`,
+`unmatch`, `uncategorize`, `exclude`, `restore`; and `recurring-*` `stop`/`resume`. Deletes need
+`--yes`. Try writes on a test organization first.
 
 ### With an AI agent
 

@@ -57,7 +57,7 @@ function notConfigured() {
     '',
     consoles,
     '',
-    '2. Choose Get Started (or Add Client) → Self Client → Create.',
+    '2. Choose Get Started (or Add Client), hover over Self Client → Create Now → Create → OK.',
     '   The Client Secret tab shows the Client ID (1000.…) and Client Secret.',
     '',
     '3. On the Generate Code tab enter:',
