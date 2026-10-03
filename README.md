@@ -122,6 +122,22 @@ const { data: overdue } = await zb.invoices.list({ status: 'overdue' });
 const org = await zb.organizations.get(organization_id);
 ```
 
+Attach files (library only for now): bill attachments and expense receipts.
+
+```js
+import fs from 'node:fs';
+
+const bill = await zb.bills.create({ is_draft: true, vendor_id, bill_number, date, line_items });
+await zb.bills.addAttachment(bill.bill_id, {
+  filename: 'invoice.pdf', data: fs.readFileSync('invoice.pdf'), contentType: 'application/pdf',
+});
+
+const expense = await zb.expenses.create({ account_id, paid_through_account_id, date, amount });
+await zb.expenses.addReceipt(expense.expense_id, { filename: 'receipt.pdf', data, contentType: 'application/pdf' });
+```
+
+`is_draft: true` in the body creates a bill in draft status. Zoho ignores `status: 'draft'`.
+
 The client refreshes the one-hour access token from the refresh token on demand. Callers never
 mint tokens.
 
@@ -143,8 +159,10 @@ Set `FOB_DEBUG=1` to see stack traces. Error messages link to
 
 - `bank-rules` and `base-currency-adjustments` are not built yet.
 - `bank-transactions categorize` and `match` have not been validated against a live bank feed.
-- Not yet supported: attachments and receipts, bulk operations, report endpoints, and a
-  browser-based `auth login`. Some writes are also missing: `journals` create, `projects` and
+- Attachments are library-only: `bills.addAttachment` and `expenses.addReceipt`. There are no CLI
+  commands for them yet, and no attachments on other resources.
+- Not yet supported: bulk operations, report endpoints, and a browser-based `auth login`.
+  Some writes are also missing: `journals` create, `projects` and
   `time-entries` create, `vendor-credits` apply-to-bills, invoice `apply-credits`,
   `bank-accounts import-statement`, and create on the settings resources.
 

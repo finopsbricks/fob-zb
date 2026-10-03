@@ -17,11 +17,18 @@
  * @property {object|null} page_context
  * @property {boolean} truncated
  *
+ * @typedef {Object} UploadFile  One file for a multipart upload
+ * @property {string} field  Form field Zoho expects (e.g. 'attachment', 'receipt')
+ * @property {string} filename
+ * @property {Uint8Array} data  File bytes (a Node Buffer works)
+ * @property {string} [contentType]  Defaults to application/octet-stream
+ *
  * @typedef {Object} Transport
  * @property {(path: string, options?: RequestOptions) => Promise<any>} get
  * @property {(path: string, body?: any, options?: RequestOptions) => Promise<any>} post
  * @property {(path: string, body?: any, options?: RequestOptions) => Promise<any>} put
  * @property {(path: string, options?: RequestOptions) => Promise<any>} delete
+ * @property {(path: string, file: UploadFile, options?: RequestOptions) => Promise<any>} upload  POST one file as multipart/form-data
  * @property {(path: string, options?: GetAllOptions, pageOpts?: { maxRows?: number, pageSize?: number }) => Promise<GetAllResult>} getAll
  */
 

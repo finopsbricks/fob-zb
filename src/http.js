@@ -93,6 +93,16 @@ function firstArray(body) {
   return [];
 }
 
+/**
+ * One file as a multipart/form-data body (Node 18+ built-ins, no dependency).
+ * @param {import('./types/general/Transport.types.js').UploadFile} file
+ */
+function toFormData({ field, filename, data, contentType = 'application/octet-stream' }) {
+  const form = new FormData();
+  form.append(field, new Blob([/** @type {BlobPart} */ (data)], { type: contentType }), filename);
+  return form;
+}
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -160,7 +170,10 @@ export function createTransport(credentials) {
       accept: 'application/json',
     };
     const init = { method, headers };
-    if (body !== undefined) {
+    if (body instanceof FormData) {
+      // fetch sets the multipart content-type (with boundary) itself.
+      init.body = body;
+    } else if (body !== undefined) {
       headers['content-type'] = 'application/json';
       init.body = JSON.stringify(body);
     }
@@ -261,6 +274,7 @@ export function createTransport(credentials) {
     post: (path, body, options) => request('POST', path, body ?? {}, options),
     put: (path, body, options) => request('PUT', path, body ?? {}, options),
     delete: (path, options) => request('DELETE', path, undefined, options),
+    upload: (path, file, options) => request('POST', path, toFormData(file), options),
     getAll,
   };
 }

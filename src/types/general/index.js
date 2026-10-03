@@ -6,6 +6,7 @@
  * @typedef {import('./Transport.types.js').Transport} Transport
  * @typedef {import('./Transport.types.js').RequestOptions} RequestOptions
  * @typedef {import('./Transport.types.js').GetAllResult} GetAllResult
+ * @typedef {import('./Transport.types.js').UploadFile} UploadFile
  */
 
 export {};

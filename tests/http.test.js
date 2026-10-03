@@ -107,3 +107,29 @@ it('getAll walks page_context.has_more_page', async () => {
   expect(out.data.map((i) => i.id)).toEqual([1, 2]);
   expect(out.truncated).toBe(false);
 });
+
+it('upload sends one file as multipart/form-data with organization_id, and retries once on a 401', async () => {
+  const sent = [];
+  global.fetch = jest.fn(async (url, init) => {
+    if (url.toString().includes('/oauth/v2/token')) return res({ access_token: 'NEW', expires_in: 3600 });
+    sent.push({ u: url.toString(), init });
+    return sent.length === 1 ? res(null, { status: 401 }) : res({ code: 0, message: 'The document has been attached.' });
+  });
+  const ctx = createTransport({ ...baseCreds, ...freshToken });
+  const r = await ctx.upload('/bills/B1/attachment', {
+    field: 'attachment', filename: 'inv.pdf', data: Buffer.from('%PDF-1.4 x'), contentType: 'application/pdf',
+  });
+
+  expect(r.message).toMatch(/attached/);
+  expect(sent).toHaveLength(2);
+  const { u, init } = sent[1];
+  expect(u).toContain('/books/v3/bills/B1/attachment');
+  expect(u).toContain('organization_id=ORG1');
+  expect(init.method).toBe('POST');
+  expect(init.headers['content-type']).toBeUndefined(); // fetch adds the multipart boundary
+  expect(init.headers.authorization).toBe('Zoho-oauthtoken NEW');
+  const file = init.body.get('attachment');
+  expect(file.name).toBe('inv.pdf');
+  expect(file.type).toBe('application/pdf');
+  expect(await file.text()).toBe('%PDF-1.4 x');
+});

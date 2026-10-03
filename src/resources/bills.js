@@ -5,6 +5,7 @@
  * distinction from invoice lines.
  * @typedef {import('../types/general/index.js').Transport} Transport
  * @typedef {import('../types/api/Bill.types.js').Bill} Bill
+ * @typedef {Omit<import('../types/general/index.js').UploadFile, 'field'>} FileUpload
  */
 import { baseResource, writeResource } from './_base.js';
 
@@ -18,6 +19,7 @@ import { baseResource, writeResource } from './_base.js';
  * @property {(id: string) => Promise<any>} delete
  * @property {(id: string) => Promise<any>} markOpen
  * @property {(id: string) => Promise<any>} markVoid
+ * @property {(id: string, file: FileUpload) => Promise<any>} addAttachment  Attach a file (PDF, image) to the bill
  */
 
 const P = '/bills';
@@ -30,5 +32,6 @@ export function buildBills(ctx) {
     ...writeResource(ctx, { path: P, itemKey: 'bill' }),
     markOpen: (id) => ctx.post(`${P}/${enc(id)}/status/open`),
     markVoid: (id) => ctx.post(`${P}/${enc(id)}/status/void`),
+    addAttachment: (id, file) => ctx.upload(`${P}/${enc(id)}/attachment`, { ...file, field: 'attachment' }),
   };
 }
