@@ -1,7 +1,7 @@
 /**
  * Shared formatting helpers for CLI output.
- * Structured text readable by both humans and LLMs. Copied from the CLI standard's
- * reference set (engineering-standards/cli/output-formatting.md).
+ * Structured text readable by both humans and LLMs; shared with the other
+ * FinOpsBricks fob-* CLIs so output looks the same across tools.
  */
 
 /**

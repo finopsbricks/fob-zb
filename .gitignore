@@ -2,3 +2,5 @@ node_modules/
 *.log
 .env
 junit.xml
+.claude/
+.DS_Store

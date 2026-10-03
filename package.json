@@ -32,6 +32,13 @@
   ],
   "license": "Apache-2.0",
   "homepage": "https://finopsbricks.com/cli/fob-zb",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/finopsbricks/fob-zb.git"
+  },
+  "bugs": {
+    "url": "https://github.com/finopsbricks/fob-zb/issues"
+  },
   "files": [
     "bin",
     "src",

@@ -139,8 +139,16 @@ Set `FOB_DEBUG=1` to see stack traces. Error messages link to
 
 - `bank-rules` and `base-currency-adjustments` are not built yet.
 - `bank-transactions categorize` and `match` have not been validated against a live bank feed.
+- Not yet supported: attachments and receipts, bulk operations, report endpoints, and a
+  browser-based `auth login`. Some writes are also missing: `journals` create, `projects` and
+  `time-entries` create, `vendor-credits` apply-to-bills, invoice `apply-credits`,
+  `bank-accounts import-statement`, and create on the settings resources.
+
+Missing something you need? [Open an issue](https://github.com/finopsbricks/fob-zb/issues).
 
 ## Develop
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```bash
 npm install
