@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-03
+
+### Fixed
+- `fob-zb --version` printed `unknown` when installed from npm (since 0.1.1). The version is now read from the package's own `package.json`.
+
 ## [0.2.0] - 2026-10-03
 
 ### Added

@@ -8,6 +8,7 @@
  * `--profile <name>` overrides the active profile for one command.
  */
 
+import { readFileSync } from 'node:fs';
 import yargs from 'yargs';
 
 import { setProfileOverride } from './config-store.js';
@@ -43,6 +44,10 @@ import { buildUsersSubcommands } from './users/index.js';
 import { buildTaxesSubcommands } from './taxes/index.js';
 import { buildCurrenciesSubcommands } from './currencies/index.js';
 import { buildContactPersonsSubcommands } from './contact-persons/index.js';
+
+// yargs' automatic version lookup can't locate this package's package.json under
+// ESM (it prints "unknown" when installed from npm), so read it relative to this file.
+const { version } = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8'));
 
 export function run(argv) {
   return yargs(argv)
@@ -91,7 +96,7 @@ export function run(argv) {
     .strict()
     .help()
     .alias('h', 'help')
-    .version()
+    .version(version)
     .alias('v', 'version')
     // Global options (inherited by every command) render under their own
     // heading; each command's own options stay under "Options:", shown first
