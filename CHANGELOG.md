@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-03
+
 ### Added
 - `fob-zb getting-started`: setup walkthrough for people and AI agents. It reports an existing setup, or lists each region's Zoho API Console, the Self Client steps and the `profiles add` command.
 - `config profiles add --from <profile>`: reuse another profile's OAuth credentials to add a second organization without a new Self Client.
