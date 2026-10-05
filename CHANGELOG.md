@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-05
+
+### Added
+- General ledger reads (library only): `reports.generalLedger({ from_date, to_date })` gives every account's debit and credit totals over a period in one call. `chartOfAccounts.listTransactions(account_id)` and `getAllTransactions(account_id)` give the posted legs on one account, in base currency with the foreign amount in `fcy_*`, each carrying the `transaction_id` its other legs share.
+- `getAllTransactions` returns `{ data, truncated }` rather than a bare array, so a ledger read capped at `MAX_ALL_ROWS` can't pass for a complete one.
+
+### Notes
+- `/reports/generalledger` requires `from_date` (Zoho code 101007) and isn't in Zoho's public API docs. `/chartofaccounts/transactions` ignores date filters: every read is the account's whole history.
+
 ## [0.4.0] - 2026-10-03
 
 ### Added

@@ -30,6 +30,7 @@ import { buildExpenses } from './resources/expenses.js';
 import { buildItems } from './resources/items.js';
 import { buildCustomerPayments } from './resources/customer-payments.js';
 import { buildChartOfAccounts } from './resources/chart-of-accounts.js';
+import { buildReports } from './resources/reports.js';
 import { buildBankAccounts } from './resources/bank-accounts.js';
 import { buildBankTransactions } from './resources/bank-transactions.js';
 import { buildVendorPayments } from './resources/vendor-payments.js';
@@ -58,6 +59,7 @@ import { buildContactPersons } from './resources/contact-persons.js';
  * @typedef {import('./resources/items.js').ItemsApi} ItemsApi
  * @typedef {import('./resources/customer-payments.js').CustomerPaymentsApi} CustomerPaymentsApi
  * @typedef {import('./resources/chart-of-accounts.js').ChartOfAccountsApi} ChartOfAccountsApi
+ * @typedef {import('./resources/reports.js').ReportsApi} ReportsApi
  * @typedef {import('./resources/bank-accounts.js').BankAccountsApi} BankAccountsApi
  * @typedef {import('./resources/bank-transactions.js').BankTransactionsApi} BankTransactionsApi
  * @typedef {import('./resources/vendor-payments.js').VendorPaymentsApi} VendorPaymentsApi
@@ -91,6 +93,7 @@ import { buildContactPersons } from './resources/contact-persons.js';
  * @property {ItemsApi} items
  * @property {CustomerPaymentsApi} customerPayments
  * @property {ChartOfAccountsApi} chartOfAccounts
+ * @property {ReportsApi} reports
  * @property {BankAccountsApi} bankAccounts
  * @property {BankTransactionsApi} bankTransactions
  * @property {VendorPaymentsApi} vendorPayments
@@ -131,6 +134,7 @@ export function fobZb(credentials) {
     items: buildItems(ctx),
     customerPayments: buildCustomerPayments(ctx),
     chartOfAccounts: buildChartOfAccounts(ctx),
+    reports: buildReports(ctx),
     bankAccounts: buildBankAccounts(ctx),
     bankTransactions: buildBankTransactions(ctx),
     vendorPayments: buildVendorPayments(ctx),

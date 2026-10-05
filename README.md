@@ -122,6 +122,15 @@ const { data: overdue } = await zb.invoices.list({ status: 'overdue' });
 const org = await zb.organizations.get(organization_id);
 ```
 
+Read the general ledger (library only for now): every account's totals in one call, then
+the posted legs on any account. Legs are in base currency, and every leg of a transaction
+shares its `transaction_id`.
+
+```js
+const { data: accounts } = await zb.reports.generalLedger({ from_date: '2000-01-01', to_date: '2026-12-31' });
+const { data: legs, truncated } = await zb.chartOfAccounts.getAllTransactions(accounts[0].account_id);
+```
+
 Attach files (library only for now): bill attachments and expense receipts.
 
 ```js
