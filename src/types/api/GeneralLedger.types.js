@@ -41,3 +41,25 @@
  * @property {boolean} [is_debit]
  */
 export {};
+
+/**
+ * One posted leg from the "Account Transactions" report
+ * (`GET /reports/accounttransaction`). Amounts are in the organization's base
+ * currency; the unused side is `""`. `transaction_id` is the source
+ * document's id on every leg, payments included.
+ *
+ * @typedef {Object} ReportAccountTransaction
+ * @property {string} transaction_id
+ * @property {string} transaction_type           e.g. 'expense', 'bill', 'vendor_payment', 'customer_payment'
+ * @property {string} date                       YYYY-MM-DD
+ * @property {string} account_id
+ * @property {string} [account_name]
+ * @property {string} [contact_id]
+ * @property {string} [transaction_details]      usually the contact's name
+ * @property {string} [entity_number]            document number (bill/invoice/payment number)
+ * @property {string} [reference_number]
+ * @property {string} [currency_code]
+ * @property {number|''} debit
+ * @property {number|''} credit
+ * @property {number} [net_amount]
+ */

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `reports.accountTransactions({ from_date, to_date, page })` and `reports.getAllAccountTransactions({ from_date, to_date })` (library only): Zoho's "Account Transactions" report, every posted leg on every account over a period, flattened from the report's nesting. `getAll…` walks pages and returns `{ data, truncated }`.
+
+### Notes
+- **Every leg carries the source document's `transaction_id`, payments included.** `chartOfAccounts.getAllTransactions` leaves most payment legs' `transaction_id` blank, with a different `categorized_transaction_id` on each side, so a vendor or customer payment can't be put back together from it. The report gives the bank, AP/AR and advance legs of a payment one shared id.
+- **The dates need `filter_by: TransactionDate.CustomDate`**, which the method sets. Without it Zoho ignores `from_date` / `to_date` and reports the current month.
+- **Amounts are in base currency only**, with no foreign-currency columns.
+- **One payment's legs can fall on two dates:** paid before the bill date, then applied to the bill on the bill date.
+- Like `generalledger`, this report is not in Zoho's public API docs.
+
 ## [0.6.0] - 2026-10-05
 
 ### Added

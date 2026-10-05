@@ -44,3 +44,23 @@ it('reports.generalLedger refuses to call Zoho without both dates', async () => 
   await expect(reports.generalLedger(/** @type {any} */ ({ to_date: '2026-12-31' }))).rejects.toThrow(/from_date and to_date/);
   expect(ctx.get).not.toHaveBeenCalled();
 });
+
+it('reports.accountTransactions sets the custom-date filter and flattens the nested rows', async () => {
+  const row = { transaction_id: 'P1', account_id: 'A1', date: '2026-09-09', debit: 162000, credit: '' };
+  const ctx = fakeCtx({ get: jest.fn(async () => ({ account_transactions: [{ account_transactions: [row] }], page_context: { has_more_page: false } })) });
+  const r = await buildReports(/** @type {any} */ (ctx)).accountTransactions({ from_date: '2026-09-09', to_date: '2026-09-09' });
+  expect(ctx.get).toHaveBeenCalledWith('/reports/accounttransaction', { searchParams: { filter_by: 'TransactionDate.CustomDate', per_page: 200, from_date: '2026-09-09', to_date: '2026-09-09' } });
+  expect(r.data).toEqual([row]);
+});
+
+it('reports.getAllAccountTransactions walks every page', async () => {
+  const page = (n, more) => ({ account_transactions: [{ account_transactions: [{ transaction_id: `T${n}` }] }], page_context: { has_more_page: more } });
+  const get = jest.fn().mockResolvedValueOnce(page(1, true)).mockResolvedValueOnce(page(2, true)).mockResolvedValueOnce(page(3, false));
+  const r = await buildReports(/** @type {any} */ (fakeCtx({ get }))).getAllAccountTransactions({ from_date: '2000-01-01', to_date: '2026-12-31' });
+  expect(r).toEqual({ data: [{ transaction_id: 'T1' }, { transaction_id: 'T2' }, { transaction_id: 'T3' }], truncated: false });
+  expect(get.mock.calls.map((c) => c[1].searchParams.page)).toEqual([1, 2, 3]);
+});
+
+it('reports.accountTransactions requires a period', async () => {
+  await expect(buildReports(/** @type {any} */ (fakeCtx())).accountTransactions(/** @type {any} */ ({}))).rejects.toThrow(/from_date and to_date are required/);
+});
