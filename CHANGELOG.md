@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-05
+
 ### Added
 - `reports.accountTransactions({ from_date, to_date, page })` and `reports.getAllAccountTransactions({ from_date, to_date })` (library only): Zoho's "Account Transactions" report, every posted leg on every account over a period, flattened from the report's nesting. `getAll…` walks pages and returns `{ data, truncated }`.
 
