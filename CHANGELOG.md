@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Bank statement import (library only): `bankAccounts.importStatement({ account_id, start_date, end_date, transactions })` puts a statement's lines into a bank or card account's feed as uncategorized transactions (`POST /bankstatements`). `bankAccounts.lastImportedStatement(id)` returns the last import with its lines, and `deleteLastImportedStatement(id, statement_id)` removes it and its feed lines; repeat to walk back further.
+
+### Notes
+Verified against a live org (2026-10-05):
+- **Import lines and sides:**
+  - Import lines take `date`; `transaction_date` is rejected ("Invalid value passed for Date", code 4).
+  - `debit_or_credit` on import is in the bank's terms (`debit` = money out). Feed lines read back from `bankTransactions` are in book terms, so the sides swap.
+- **Re-imports:** an identical line is not added twice. A line that differs in any field is added as a new line.
+- **`bankTransactions.list` / `getAll` need a `filter_by`:**
+  - With no filter, or with `Status.All`, uncategorized lines are left out; read them with `Status.Uncategorized`.
+  - A categorized line's `transaction_id` is the record it became (e.g. the vendor payment), and `imported_transaction_id` is the feed line. `uncategorize` takes the feed-line id and deletes the record it created.
+- **`bankTransactions.categorize(id, 'vendorpayments', { vendor_id, amount, date, paid_through_account_id, bills: [{ bill_id, amount_applied }] })`:**
+  - Applies one bank line across several bills, or part of one. `amount` must equal the feed line's amount (code 108002).
+  - **Zoho applies the payment to a draft bill too, and marks it paid.** Callers that keep drafts for approval must check the bill's status themselves.
+
 ## [0.5.0] - 2026-10-05
 
 ### Added
