@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-05
+
 ### Added
 - Bank statement import (library only): `bankAccounts.importStatement({ account_id, start_date, end_date, transactions })` puts a statement's lines into a bank or card account's feed as uncategorized transactions (`POST /bankstatements`). `bankAccounts.lastImportedStatement(id)` returns the last import with its lines, and `deleteLastImportedStatement(id, statement_id)` removes it and its feed lines; repeat to walk back further.
 
